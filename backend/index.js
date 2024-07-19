@@ -6,10 +6,10 @@ import db from "./config/database.js";
 import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
-// import User from "./models/UserModel.js";
-// import Product from "./models/ProductModel.js";
-// import Book from "./models/BookModel.js";
-// import Note from "./models/NoteModel.js";
+import User from "./models/UserModel.js";
+import Product from "./models/ProductModel.js";
+import Book from "./models/BookModel.js";
+import Note from "./models/NoteModel.js";
 
 // mengizinkan menggunakan .env diakses
 dotenv.config();

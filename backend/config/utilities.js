@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 // function authenticate token jwt
-export const authenticateTokne = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"]; // menerima token yang dikirim dari pengguna
   const token = authHeader && authHeader.split(" ")[1]; // mengambil token yang didapatkan dari pengguna
 
