@@ -2,20 +2,39 @@ import User from "../models/UserModel.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 
-// Get a user
+// Get All User
 export const getUser = async (req, res) => {
   try {
-    const response = await User.findAll({
+    const users = await User.findAll({
       attributes: ["uuid", "name", "email", "role"],
     });
-    response.status(200).json(response);
+
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
 };
 
 // Get user by id
-export const getUserById = async () => {};
+export const getUserById = async (req, res) => {
+  try {
+    const users = await User.findOne({
+      attributes: ["uuid", "name", "email", "role"],
+    });
+    const accessToken = jwt.sign(
+      { userId: users.uuid, role: users.role },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "6h" } // token kadaluarsa dalam 6 jam
+    );
+
+    res.status(200).json({
+      users,
+      accessToken,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
 
 // create a user
 export const createUser = async (req, res) => {
@@ -54,14 +73,14 @@ export const createUser = async (req, res) => {
     await user.save();
 
     // membuat token jwt
-    const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "36000m", // token akan expire dalam 6 jam
-    });
+    // const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
+    //   expiresIn: "36000m", // token akan expire dalam 6 jam
+    // });
 
     // jika berhasil tampilkan data pengguna, token jwt dan message, dengan status 200
     return res.status(200).json({
       user,
-      accessToken,
+      // accessToken,
       message: "Register Successfully",
     });
 
@@ -74,7 +93,7 @@ export const createUser = async (req, res) => {
 };
 
 // update a user
-export const updateUser = async () => {};
+export const updateUser = async (req, res) => {};
 
 // delete a user
 export const deleteUser = async () => {};
