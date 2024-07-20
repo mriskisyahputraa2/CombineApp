@@ -23,7 +23,7 @@ const Product = db.define(
         len: [3, 100],
       },
     },
-    merek: {
+    brand: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

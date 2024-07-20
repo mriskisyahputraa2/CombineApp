@@ -6,6 +6,7 @@ import db from "./config/database.js";
 import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import ProductRoute from "./routes/ProductRoute.js";
 import User from "./models/UserModel.js";
 import Product from "./models/ProductModel.js";
 import Book from "./models/BookModel.js";
@@ -23,7 +24,6 @@ const store = new sessionStore({
 });
 
 // sinkronisasi database
-
 // (async () => {
 //   try {
 //     await db.sync({ alter: true }); // Sinkronisasi semua model
@@ -67,6 +67,7 @@ app.use(express.json());
 // middleware routes
 app.use(UserRoute);
 app.use(AuthRoute);
+app.use(ProductRoute);
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Server up and running");
