@@ -1,5 +1,5 @@
 import User from "../models/UserModel.js";
-import argon2 from "argon2";
+import argon2, { hash } from "argon2";
 import jwt from "jsonwebtoken";
 
 // Get All User
@@ -93,7 +93,79 @@ export const createUser = async (req, res) => {
 };
 
 // update a user
-export const updateUser = async (req, res) => {};
+export const updateUser = async (req, res) => {
+  const { name, email, password, role } = req.body;
+
+  const user = await User.findOne({
+    where: {
+      uuid: req.params.id,
+    },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  let hashPassword;
+  if (password === "" || password === null) {
+    hashPassword = user.password;
+  } else {
+    hashPassword = await argon2.hash(password);
+  }
+
+  try {
+    // Generate new access token only if role has changed
+    let accessToken;
+    if (role !== user.role) {
+      accessToken = jwt.sign(
+        { userId: user.uuid, role: role }, // Menggunakan role yang baru
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "6h" }
+      );
+    } else {
+      accessToken = user.accessToken; // Menggunakan token yang lama jika tidak ada perubahan pada role
+    }
+
+    await User.update(
+      {
+        name: name,
+        email: email,
+        password: hashPassword,
+        role: role,
+        accessToken,
+      },
+      {
+        where: {
+          uuid: user.uuid,
+        },
+      }
+    );
+    return res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 // delete a user
-export const deleteUser = async () => {};
+export const deleteUser = async (req, res) => {
+  const user = await User.findOne({
+    where: {
+      uuid: req.params.id,
+    },
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  try {
+    await User.destroy({
+      where: {
+        id: user.id,
+      },
+    });
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
