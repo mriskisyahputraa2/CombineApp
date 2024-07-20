@@ -59,7 +59,25 @@ export const Login = async (req, res) => {
 };
 
 // Get me
-export const Me = async (req, res) => {};
+export const Me = async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ msg: "Please login to your account!" });
+  }
+  const user = await User.findOne({
+    attributes: ["uuid", "name", "email", "role"],
+    where: {
+      uuid: req.session.userId,
+    },
+  });
+
+  if (!user) return res.status(404).json({ msg: "User not found!" });
+  res.status(200).json(user);
+};
 
 // Logout a user
-export const Logout = async (req, res) => {};
+export const Logout = async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return res.status(400).json({ msg: "Unable to log out" });
+    res.status(200).json({ msg: "You are logged out" });
+  });
+};
