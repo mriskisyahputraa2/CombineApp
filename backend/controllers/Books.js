@@ -30,7 +30,7 @@ export const getAllBooks = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ messsage: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -75,7 +75,7 @@ export const getBooksById = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ messsage: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -140,7 +140,7 @@ export const updateBooks = async (req, res) => {
     if (isNaN(deadlineDate)) {
       return res
         .status(400)
-        .json({ messsage: "The date you entered is invalid!" });
+        .json({ message: "The date you entered is invalid!" });
     }
 
     // inisialisasi membuat date hari ini / tanggal dan waktu saat ini
@@ -150,7 +150,7 @@ export const updateBooks = async (req, res) => {
     if (deadlineDate < today) {
       return res
         .status(400)
-        .json({ messsage: "The date you entered has passed" });
+        .json({ message: "The date you entered has passed" });
     }
 
     // validasi, jika role pengguna ialah 'admin', maka role 'admin' bisa meng-update data yang dibuat `admin` dan `user`
@@ -169,7 +169,7 @@ export const updateBooks = async (req, res) => {
       if (req.userId !== book.userId) {
         return res
           .status(403)
-          .json({ messsage: "Access restricted, you are not an admin" });
+          .json({ message: "Access restricted, you are not an admin" });
       }
 
       // jika role pengguna ialah 'user' maka update data-nya
@@ -182,9 +182,9 @@ export const updateBooks = async (req, res) => {
         }
       );
     }
-    res.status(200).json({ messsage: "Book updated successfully" });
+    res.status(200).json({ message: "Book updated successfully" });
   } catch (error) {
-    res.status(500).json({ messsage: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -197,7 +197,7 @@ export const deleteBooks = async (req, res) => {
       },
     });
 
-    if (!book) return res.status(404).json({ messsage: "Book not found" });
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
     // validasi, jika role pengguna ialah 'admin', maka role 'admin' bisa menghapus data yang dibuat `admin` dan `user`
     if (req.role === "admin") {
@@ -212,7 +212,7 @@ export const deleteBooks = async (req, res) => {
       if (req.userId !== book.userId) {
         return res
           .status(403)
-          .json({ messsage: "Access restricted, you are not an admin" });
+          .json({ message: "Access restricted, you are not an admin" });
       }
 
       // jika role pengguna ialah 'user' maka hapus data-nya
@@ -222,17 +222,18 @@ export const deleteBooks = async (req, res) => {
         },
       });
     }
-    res.status(200).json({ messsage: "Book deleted successfully" });
+    res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
-    res.status(500).json({ messsage: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
+// Function extendDeadline untuk memperpanjang waktu deadline
 export const extendDeadline = async (req, res) => {
   const { bookId, newDeadline } = req.body;
 
   if (req.role !== "admin") {
-    return res.status(403).json({ messsage: "Akses dilarang: Hanya Admin" });
+    return res.status(403).json({ message: "Akses dilarang: Hanya Admin" });
   }
 
   const newDeadlineDate = new Date(newDeadline);
@@ -240,20 +241,20 @@ export const extendDeadline = async (req, res) => {
   if (isNaN(newDeadlineDate)) {
     return res
       .status(400)
-      .json({ messsage: "Tanggal yang kamu masukkan tidak valid" });
+      .json({ message: "Tanggal yang kamu masukkan tidak valid" });
   }
 
   try {
     const book = await Book.findByPk(bookId);
     if (!book) {
-      return res.status(404).json({ messsage: "Buku tidak ditemukan" });
+      return res.status(404).json({ message: "Buku tidak ditemukan" });
     }
 
     book.deadline = newDeadlineDate;
     await book.save();
 
-    res.status(200).json(book);
+    res.status(200).json({ message: "Deadline extended successfully", book });
   } catch (error) {
-    res.status(500).json({ messsage: error.message });
+    res.status(500).json({ message: error.message });
   }
 };

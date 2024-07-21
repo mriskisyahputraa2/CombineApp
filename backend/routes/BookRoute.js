@@ -11,11 +11,11 @@ import {
 
 const router = express.Router();
 
-router.get("/books", verifyUser, getAllBooks);
+router.get("/get-all-books", verifyUser, getAllBooks);
 router.get("/books/:id", verifyUser, getBooksById);
-router.post("/books", verifyUser, createBooks);
-router.patch("/books/:id", verifyUser, updateBooks);
-router.delete("/books/:id", verifyUser, deleteBooks);
+router.post("/create-books", verifyUser, createBooks);
+router.patch("/update-books/:id", verifyUser, updateBooks);
+router.delete("/delete-books/:id", verifyUser, deleteBooks);
 
 // Rute untuk memperpanjang deadline, hanya admin yang bisa mengakses
 router.put("/books/extend/:id", verifyUser, adminOnly, extendDeadline);
