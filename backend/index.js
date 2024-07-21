@@ -7,6 +7,7 @@ import SequelizeStore from "connect-session-sequelize";
 import UserRoute from "./routes/UserRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
+import BookRoute from "./routes/BookRoute.js";
 import User from "./models/UserModel.js";
 import Product from "./models/ProductModel.js";
 import Book from "./models/BookModel.js";
@@ -68,6 +69,7 @@ app.use(express.json());
 app.use(UserRoute);
 app.use(AuthRoute);
 app.use(ProductRoute);
+app.use(BookRoute);
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Server up and running");

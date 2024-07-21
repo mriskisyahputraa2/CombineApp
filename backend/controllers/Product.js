@@ -2,9 +2,12 @@ import Product from "../models/ProductModel.js";
 import User from "../models/UserModel.js";
 import { Op } from "sequelize";
 
-export const getProduct = async (req, res) => {
+// function Get All Product
+export const getAllProduct = async (req, res) => {
   try {
     let response;
+
+    // validasi, jika role nya adalah admin, maka tampilkan semua data product
     if (req.role === "admin") {
       response = await Product.findAll({
         attributes: ["uuid", "name", "brand", "price"],
@@ -15,11 +18,13 @@ export const getProduct = async (req, res) => {
           },
         ],
       });
+
+      // jika bukan admin, maka tampilkan semua data product yang rolenya 'user'
     } else {
       response = await Product.findAll({
         attributes: ["uuid", "name", "brand", "price"],
         where: {
-          userId: req.userId,
+          userId: req.userId, // disini yang menentukan pengguna adalah 'user'
         },
         include: [
           {
@@ -31,20 +36,20 @@ export const getProduct = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
+// function Get Product By Id
 export const getProductById = async (req, res) => {
   try {
-    // mendapatkan data product berdasarkan id
     const product = await Product.findOne({
       where: {
-        uuid: req.params.id,
+        uuid: req.params.id, // uuid ialah name field table product, mendapatkan request parameter dari id yang dimasukkan pengguna
       },
     });
 
-    if (!product) return res.status(404).json({ msg: "Product not found" });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     let response;
     if (req.role === "admin") {
@@ -76,10 +81,11 @@ export const getProductById = async (req, res) => {
     }
     res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
+// function Create Product
 export const createProduct = async (req, res) => {
   const { name, brand, price } = req.body;
 
@@ -97,6 +103,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
+// function Update Product
 export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findOne({
@@ -105,10 +112,11 @@ export const updateProduct = async (req, res) => {
       },
     });
 
-    if (!product) return res.status(404).json({ msg: "Product not found" });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     const { name, brand, price } = req.body;
 
+    // validasi, jika role pengguna adalah admin maka, admin bisa update data product dari role 'admin' dan role 'user'
     if (req.role === "admin") {
       await Product.update(
         { name, price, brand },
@@ -118,12 +126,16 @@ export const updateProduct = async (req, res) => {
           },
         }
       );
+
+      // jika role bukan admin ialah 'user'
     } else {
+      // validasi, jika role nya adalah 'user', maka pengguna tidak bisa update data product 'admin'
       if (req.userId !== product.userId)
         return res
           .status(403)
-          .json({ msg: "Access restricted, you are not an admin" });
+          .json({ message: "Access restricted, you are not an admin" });
 
+      // jika yang update data product ialah 'user', maka di updated
       await Product.update(
         { name, price },
         {
@@ -133,22 +145,22 @@ export const updateProduct = async (req, res) => {
         }
       );
     }
-    res.status(200).json({ msg: "Product updated successfully" });
+    res.status(200).json({ message: "Product updated successfully" });
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
+// function Delete Product
 export const deleteProduct = async (req, res) => {
   try {
-    // mendapatkan data product berdasarkan id
     const product = await Product.findOne({
       where: {
         uuid: req.params.id,
       },
     });
 
-    if (!product) return res.status(404).json({ msg: "Product not found" });
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     if (req.role === "admin") {
       await Product.destroy({
@@ -160,7 +172,7 @@ export const deleteProduct = async (req, res) => {
       if (req.userId !== product.userId)
         return res
           .status(403)
-          .json({ msg: "Access restricted, you are not an admin" });
+          .json({ message: "Access restricted, you are not an admin" });
 
       await Product.destroy({
         where: {
@@ -168,8 +180,8 @@ export const deleteProduct = async (req, res) => {
         },
       });
     }
-    res.status(200).json({ msg: "Product deleted successfully" });
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ msg: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
