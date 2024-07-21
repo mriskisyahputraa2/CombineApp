@@ -9,10 +9,10 @@ import AuthRoute from "./routes/AuthRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
 import BookRoute from "./routes/BookRoute.js";
 import NoteRoute from "./routes/NoteRoute.js";
-import User from "./models/UserModel.js";
-import Product from "./models/ProductModel.js";
-import Book from "./models/BookModel.js";
-import Note from "./models/NoteModel.js";
+// import User from "./models/UserModel.js";
+// import Product from "./models/ProductModel.js";
+// import Book from "./models/BookModel.js";
+// import Note from "./models/NoteModel.js";
 
 // mengizinkan menggunakan .env diakses
 dotenv.config();
