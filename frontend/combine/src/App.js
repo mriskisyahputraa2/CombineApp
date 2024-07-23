@@ -1,10 +1,14 @@
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Layout from "./containers/Layout.jsx";
 function App() {
   return (
-    <div>
-      <h1 className="text-2xl">Test Test App</h1>
-    </div>
+    <>
+      <Router>
+        <Routes path="/dashboard" excat elemet={<Layout />} />
+      </Router>
+    </>
   );
 }
 
