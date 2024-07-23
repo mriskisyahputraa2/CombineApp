@@ -9,7 +9,7 @@ const axiosInstance = axios.create({
   },
 });
 
-axiosInstance.interceptors.request(
+axiosInstance.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem("token");
 
@@ -22,3 +22,5 @@ axiosInstance.interceptors.request(
     return Promise.reject(error);
   }
 );
+
+export default axiosInstance;
