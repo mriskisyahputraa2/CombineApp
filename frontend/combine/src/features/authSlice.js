@@ -14,7 +14,7 @@ export const LoginUser = createAsyncThunk(
   "user/LoginUser",
   async (user, thunkAPI) => {
     try {
-      const response = await axios.post("http://localhost:6000/login", {
+      const response = await axios.post("http://localhost:8080/login", {
         email: user.email,
         password: user.password,
       });
@@ -29,7 +29,7 @@ export const LoginUser = createAsyncThunk(
 // Function Get Me dari request backend untuk frontend
 export const getMe = createAsyncThunk("user/getMe", async (_, thunkAPI) => {
   try {
-    const response = await axios.get("http://localhost:6000/me");
+    const response = await axios.get("http://localhost:8080/me");
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -41,7 +41,7 @@ export const getMe = createAsyncThunk("user/getMe", async (_, thunkAPI) => {
 
 // Function Logout
 export const logOut = createAsyncThunk("user/logOut", async () => {
-  await axios.delete("http://localhost:6000/logout");
+  await axios.delete("http://localhost:8080/logout");
 });
 
 // Function AuthSlice
