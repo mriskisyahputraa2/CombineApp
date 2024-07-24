@@ -9,7 +9,9 @@ export const Login = async (req, res) => {
 
     // Validasi input
     if (!email || !password) {
-      return res.status(400).json({ msg: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     // mencari email pengguna
@@ -17,7 +19,7 @@ export const Login = async (req, res) => {
 
     // validasi, jika email pengguna tidak ditemukan
     if (!user) {
-      return res.status(404).json({ msg: "User not found!" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
     // verifikasi password pengguna dengan password di database, jika cocok hash lagi
@@ -25,7 +27,7 @@ export const Login = async (req, res) => {
 
     // validasi jika password tidak cocok
     if (!match) {
-      return res.status(400).json({ msg: "Wrong password!" });
+      return res.status(400).json({ message: "Wrong password!" });
     }
 
     // membuat token jwt payload berisi userId dan role pengguna
@@ -54,14 +56,14 @@ export const Login = async (req, res) => {
     // jika proses validasi gagal, maka tampilkan status 500 dan message
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // Get me
 export const Me = async (req, res) => {
   if (!req.session.userId) {
-    return res.status(401).json({ msg: "Please login to your account!" });
+    return res.status(401).json({ message: "Please login to your account!" });
   }
   const user = await User.findOne({
     attributes: ["uuid", "name", "email", "role"],
@@ -70,14 +72,14 @@ export const Me = async (req, res) => {
     },
   });
 
-  if (!user) return res.status(404).json({ msg: "User not found!" });
+  if (!user) return res.status(404).json({ message: "User not found!" });
   res.status(200).json(user);
 };
 
 // Logout a user
 export const Logout = async (req, res) => {
   req.session.destroy((err) => {
-    if (err) return res.status(400).json({ msg: "Unable to log out" });
-    res.status(200).json({ msg: "You are logged out" });
+    if (err) return res.status(400).json({ message: "Unable to log out" });
+    res.status(200).json({ message: "You are logged out" });
   });
 };
