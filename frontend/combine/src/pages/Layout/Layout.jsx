@@ -4,29 +4,17 @@ import React from "react";
 
 const Layout = ({ children }) => {
   return (
-    <div>
-      <React.Fragment>
-        <Navbar />
-        <div className="columns mt-6" style={{ minHeight: "100vh" }}>
-          <div className="column is-2">
-            <Sidebar />
-          </div>
-          <div className="column has-background-light">
-            <main>{children}</main>
-          </div>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex flex-1 mt-6">
+        <div className="hidden md:block w-1/5 bg-gray-100 p-4">
+          <Sidebar />
         </div>
-      </React.Fragment>
+        <div className="w-full bg-gray-200 p-4 mt-4">
+          <main>{children}</main>
+        </div>
+      </div>
     </div>
-    // <div>
-    //   <React.Fragment>
-    //     <Navbar />
-    //     <div className="columns mt-6" style={{ minHeight: "100vh" }}>
-    //       <div className="column has-background-light">
-    //         <main>{children}</main>
-    //       </div>
-    //     </div>
-    //   </React.Fragment>
-    // </div>
   );
 };
 

@@ -1,11 +1,12 @@
+import { Sidebar } from "flowbite-react";
 import React from "react";
 
 const Welcome = () => {
   return (
-    <div>
-      <h1 className="title has-text-dark">Dashboard</h1>
-      <h2 className="subtitle has-text-dark">
-        Welcome <strong className="has-text-dark ">Rizki</strong>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-4">Dashboard</h1>
+      <h2 className="text-xl text-gray-700">
+        Welcome <strong className="text-gray-900">Rizki</strong>
       </h2>
     </div>
   );
