@@ -1,17 +1,26 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-// import {
-//   IoPerson,
-//   IoPricetag,
-//   IoHome,
-//   IoLogOut,
-//   IoBook,
-// } from "react-icons/io5";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { IoHome, IoPricetag, IoBook } from "react-icons/io5";
+import {
+  IoHome,
+  IoPricetag,
+  IoBook,
+  IoDocumentText,
+  IoCloud,
+  IoLogOut,
+} from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { logOut, reset } from "../../features/authSlice";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const logout = () => {
+    dispatch(logOut());
+    dispatch(reset());
+    navigate("/");
+  };
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -84,7 +93,7 @@ const Sidebar = () => {
                 to="/notes"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <IoHome
+                <IoDocumentText
                   className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true"
                 />
@@ -96,12 +105,25 @@ const Sidebar = () => {
                 to="/weather"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
-                <IoHome
+                <IoCloud
                   className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Weather</span>
               </NavLink>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={logout}
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <IoLogOut
+                  className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true"
+                />
+                <span className="ms-3">Logout</span>
+              </button>
             </li>
           </ul>
         </div>

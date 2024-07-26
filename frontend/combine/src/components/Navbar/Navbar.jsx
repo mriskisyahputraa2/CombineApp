@@ -3,7 +3,14 @@ import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logOut, reset } from "../../features/authSlice";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { IoHome, IoPricetag, IoBook } from "react-icons/io5";
+import {
+  IoHome,
+  IoPricetag,
+  IoBook,
+  IoLogOut,
+  IoCloud,
+  IoDocumentText,
+} from "react-icons/io5";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 
@@ -152,7 +159,7 @@ const Navbar = ({ value }) => {
                 to="/notes"
                 className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <IoHome
+                <IoDocumentText
                   className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
                   aria-hidden="true"
                 />
@@ -160,10 +167,27 @@ const Navbar = ({ value }) => {
               </NavLink>
             </li>
             <li>
-              <button
-                onClick={logout}
-                className="flex items-center w-full p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+              <NavLink
+                to="/weather"
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
               >
+                <IoCloud
+                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  aria-hidden="true"
+                />
+                <span className="ms-3">Weather</span>
+              </NavLink>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={logout}
+                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <IoLogOut
+                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  aria-hidden="true"
+                />
                 <span className="ms-3">Logout</span>
               </button>
             </li>
