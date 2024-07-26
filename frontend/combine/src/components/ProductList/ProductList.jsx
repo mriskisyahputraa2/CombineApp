@@ -67,39 +67,42 @@ const ProductList = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                      1
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                      John Brown
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-80">
-                      45
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-80">
-                      New York No. 1 Lake Park
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium ">
-                      <button
-                        type="button"
-                        // onClick={handleEdit}
-                        className="mb-2 p-2 bg-transparent shadow-md text-green-600 hover:text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200"
-                        aria-label="Edit"
-                      >
-                        <IoPencil className="w-[15px] h-[15px]" />
-                      </button>
+                  {products.map((product, index) => (
+                    <tr key={product.uuid}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                        {product.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                        {product.price}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                        {product.user.name}
+                      </td>
 
-                      <button
-                        type="button"
-                        // onClick={handleDelete}
-                        className="p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200"
-                        aria-label="Delete"
-                      >
-                        <IoTrash className="w-[15px] h-[15px]" />
-                      </button>
-                    </td>
-                  </tr>
+                      <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium ">
+                        <button
+                          type="button"
+                          // onClick={handleEdit}
+                          className="mb-2 p-2 bg-transparent shadow-md text-green-600 hover:text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition duration-200"
+                          aria-label="Edit"
+                        >
+                          <IoPencil className="w-[15px] h-[15px]" />
+                        </button>
+
+                        <button
+                          type="button"
+                          // onClick={handleDelete}
+                          className="p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200"
+                          aria-label="Delete"
+                        >
+                          <IoTrash className="w-[15px] h-[15px]" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
