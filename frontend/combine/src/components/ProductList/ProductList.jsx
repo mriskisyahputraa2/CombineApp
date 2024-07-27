@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -15,14 +16,34 @@ const ProductList = () => {
     setProducts(response.data);
   };
 
+  // function delete products
   const deleteProduct = async (productId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirmDelete) {
-      await axios.delete(`http://localhost:8080/delete-products/${productId}`);
-    }
-    getProducts();
+    // switch alert delete product
+    Swal.fire({
+      title: "Are you sure you want to delete this?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(
+          `http://localhost:8080/delete-products/${productId}`
+        );
+        Swal.fire("Deleted!", "Your product has been deleted.", "success");
+        getProducts(); // Refresh product list after deletion
+      }
+    });
+  };
+
+  // price format rupiah
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(number);
   };
 
   return (
@@ -95,14 +116,12 @@ const ProductList = () => {
                         {product.brand}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {product.price}
+                        {formatRupiah(product.price)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
                         {product.user.name}
                       </td>
-
                       <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium ">
-                        {/* button edit */}
                         <Link
                           to={`/products/edit/${product.uuid}`}
                           className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
@@ -110,8 +129,6 @@ const ProductList = () => {
                         >
                           <IoPencil className="w-[15px] h-[15px]" />
                         </Link>
-
-                        {/* button delete */}
                         <button
                           type="button"
                           onClick={() => deleteProduct(product.uuid)}
