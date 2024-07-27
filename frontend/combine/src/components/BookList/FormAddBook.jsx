@@ -1,42 +1,39 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
-const FormEditProduct = () => {
+const FormAddBook = () => {
   const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [brand, setBrand] = useState("");
+  const [genre, setGenre] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
-  const { id } = useParams();
 
-  useEffect(() => {
-    const getProductById = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/products/${id}`
-        );
-        setName(response.data.name);
-        setBrand(response.data.brand);
-        setPrice(response.data.price);
-      } catch (error) {
-        if (error.response) {
-          setMsg(error.response.data.msg);
-        }
-      }
-    };
-    getProductById();
-  }, [id]);
-
-  const updateProduct = async (e) => {
+  const saveBook = async (e) => {
     e.preventDefault();
-    try {
-      await axios.patch(`http://localhost:8080/update-products/${id}`, {
-        name,
-        brand,
-        price,
+
+    // inisialisasi format date
+    const tanggalSaatIni = new Date();
+    const tanggalMasuk = new Date(deadline);
+
+    // validasi format date
+    if (tanggalSaatIni > tanggalMasuk) {
+      Swal.fire({
+        title: "Attention!",
+        text: "Please move your date forward.",
+        icon: "warning",
+        confirmButtonText: "OK",
       });
-      navigate("/products");
+      return;
+    }
+    try {
+      await axios.post(`http://localhost:8080/create-books`, {
+        name,
+        genre,
+        deadline,
+      });
+      navigate("/books");
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);
@@ -46,22 +43,20 @@ const FormEditProduct = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4 text-gray-800 ">Products</h1>
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">
-        Update Product
-      </h2>
+      <h1 className="text-3xl font-bold mb-4 text-gray-800 ">Books</h1>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700">Add New Book</h2>
       <div className="flex flex-col">
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
-              <form onSubmit={updateProduct} className="space-y-6">
+              <form onSubmit={saveBook} className="space-y-6">
                 <p>{msg}</p>
                 <div className="mb-4">
                   <label
                     htmlFor="name"
                     className="block text-sm font-bold text-black"
                   >
-                    Product Name
+                    Book Name
                   </label>
                   <input
                     id="name"
@@ -77,13 +72,13 @@ const FormEditProduct = () => {
                     htmlFor="brand"
                     className="block text-sm font-bold text-black"
                   >
-                    Brand
+                    Genre
                   </label>
                   <input
                     id="brand"
                     type="text"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    value={genre}
+                    onChange={(e) => setGenre(e.target.value)}
                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
                     required
                   />
@@ -91,16 +86,16 @@ const FormEditProduct = () => {
 
                 <div className="mb-4">
                   <label
-                    htmlFor="price"
+                    htmlFor="deadline"
                     className="block text-sm font-bold text-black"
                   >
-                    Price
+                    Deadline
                   </label>
                   <input
-                    id="price"
-                    type="number"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    id="deadline"
+                    type="date"
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
                     className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
                     required
                   />
@@ -111,7 +106,7 @@ const FormEditProduct = () => {
                     type="submit"
                     className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-medium text-sm leading-5 rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-150"
                   >
-                    Update Product
+                    Add Book
                   </button>
                 </div>
               </form>
@@ -123,4 +118,4 @@ const FormEditProduct = () => {
   );
 };
 
-export default FormEditProduct;
+export default FormAddBook;

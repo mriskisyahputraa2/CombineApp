@@ -37,7 +37,25 @@ const BookList = () => {
     }
   };
 
-  const deletebooks = async (bookId) => {};
+  // function delete books
+  const deletebooks = async (bookId) => {
+    // switch alert delete product
+    Swal.fire({
+      title: "Are you sure you want to delete this?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`http://localhost:8080/delete-books/${bookId}`);
+        Swal.fire("Deleted!", "Your product has been deleted.", "success");
+        getBooks(); // Refresh product list after deletion
+      }
+    });
+  };
 
   return (
     <div className="p-6">

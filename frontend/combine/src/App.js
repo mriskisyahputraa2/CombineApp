@@ -7,6 +7,8 @@ import Products from "./pages/Products/Products";
 import AddProduct from "./pages/Products/AddProduct";
 import EditProduct from "./pages/Products/EditProduct";
 import Books from "./pages/Books/Books";
+import AddBooks from "./pages/Books/AddBooks";
+import EditBooks from "./pages/Books/EditBooks";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/products/add" exact element={<AddProduct />} />
           <Route path="/products/edit/:id" exact element={<EditProduct />} />
           <Route path="/books" exact element={<Books />} />
+          <Route path="/books/add" exact element={<AddBooks />} />
+          <Route path="/books/edit/:id" exact element={<EditBooks />} />
         </Routes>
       </Router>
     </>
