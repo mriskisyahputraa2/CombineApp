@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp/SignUp";
 import Products from "./pages/Products/Products";
 import AddProduct from "./pages/Products/AddProduct";
 import EditProduct from "./pages/Products/EditProduct";
+import Books from "./pages/Books/Books";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/products" exact element={<Products />} />
           <Route path="/products/add" exact element={<AddProduct />} />
           <Route path="/products/edit/:id" exact element={<EditProduct />} />
+          <Route path="/books" exact element={<Books />} />
         </Routes>
       </Router>
     </>
