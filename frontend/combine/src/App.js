@@ -9,6 +9,7 @@ import EditProduct from "./pages/Products/EditProduct";
 import Books from "./pages/Books/Books";
 import AddBooks from "./pages/Books/AddBooks";
 import EditBooks from "./pages/Books/EditBooks";
+import Notes from "./pages/Notes/Notes";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/books" exact element={<Books />} />
           <Route path="/books/add" exact element={<AddBooks />} />
           <Route path="/books/edit/:id" exact element={<EditBooks />} />
+          <Route path="/notes/" exact element={<Notes />} />
         </Routes>
       </Router>
     </>

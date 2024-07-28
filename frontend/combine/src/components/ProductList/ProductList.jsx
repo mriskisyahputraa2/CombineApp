@@ -8,10 +8,10 @@ const ProductList = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    getProducts();
+    getAllProduct();
   }, []);
 
-  const getProducts = async () => {
+  const getAllProduct = async () => {
     const response = await axios.get("http://localhost:8080/get-all-products");
     setProducts(response.data);
   };
@@ -33,7 +33,7 @@ const ProductList = () => {
           `http://localhost:8080/delete-products/${productId}`
         );
         Swal.fire("Deleted!", "Your product has been deleted.", "success");
-        getProducts(); // Refresh product list after deletion
+        getAllProduct(); // Refresh product list after deletion
       }
     });
   };

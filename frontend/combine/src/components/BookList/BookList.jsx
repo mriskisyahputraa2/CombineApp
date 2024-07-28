@@ -7,13 +7,13 @@ import Swal from "sweetalert2";
 const BookList = () => {
   const [books, setBooks] = useState([]);
 
-  const getBooks = async () => {
+  const getAllBook = async () => {
     const response = await axios.get("http://localhost:8080/get-all-books");
     setBooks(response.data);
   };
 
   useEffect(() => {
-    getBooks();
+    getAllBook();
   }, []);
 
   // function create format deadline
@@ -52,7 +52,7 @@ const BookList = () => {
       if (result.isConfirmed) {
         await axios.delete(`http://localhost:8080/delete-books/${bookId}`);
         Swal.fire("Deleted!", "Your product has been deleted.", "success");
-        getBooks(); // Refresh product list after deletion
+        getAllBook(); // Refresh product list after deletion
       }
     });
   };
