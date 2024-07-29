@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import Layout from "../Layout/Layout";
-import FormAddProduct from "../../components/ProductList/FormAddProduct";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { getMe } from "../../features/authSlice";
+import Layout from "../Layout/Layout";
+import FormAddNote from "../../components/NotesList/FormAddNote";
 
-const AddProduct = () => {
+const AddNotes = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isError } = useSelector((state) => state.auth);
@@ -18,15 +18,15 @@ const AddProduct = () => {
     if (isError) {
       navigate("/");
     }
-  }, [navigate, isError]);
+  }, [isError, navigate]);
 
   return (
     <div>
       <Layout>
-        <FormAddProduct />
+        <FormAddNote />
       </Layout>
     </div>
   );
 };
 
-export default AddProduct;
+export default AddNotes;

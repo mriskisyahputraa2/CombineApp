@@ -5,9 +5,11 @@ import { IoPencil, IoTrash } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { MdAdd } from "react-icons/md";
 
 const NoteList = () => {
   const [notes, setNotes] = useState([]);
+  // const [openAddModal, setOpenAddModal] = useState(false);
 
   const getAllNote = async () => {
     const response = await axios.get("http://localhost:8080/get-all-notes");
@@ -35,6 +37,25 @@ const NoteList = () => {
         getAllNote(); // Refresh product list after deletion
       }
     });
+  };
+  const updatedIsPinned = async (noteData) => {
+    const noteId = noteData._id;
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:8080/update-notes/${noteId}`,
+        {
+          isPinned: !noteData.isPinned,
+        }
+      );
+
+      if (response.data && response.data.notes) {
+        alert("Pinned Notes");
+        getAllNote();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -65,7 +86,8 @@ const NoteList = () => {
                     note.isPinned ? "text-blue-500" : "text-gray-400"
                   }`}
                   style={{ width: "16px", height: "16px" }} // Fixed size
-                  onClick={note.onPinNote}
+                  // onClick={note.onPinNote}
+                  onClick={updatedIsPinned}
                 />
               </div>
             </div>
@@ -95,6 +117,12 @@ const NoteList = () => {
             </div>
           </div>
         ))}
+        <Link
+          to={"/notes/add"}
+          className="w-14 h-14 flex items-center justify-center rounded-2xl bg-green-600 hover:bg-green-700 fixed right-4 bottom-4 md:right-10 md:bottom-10 shadow-lg font-semibold"
+        >
+          <MdAdd className="text-[32px] text-white" />
+        </Link>
       </div>
     </div>
   );
