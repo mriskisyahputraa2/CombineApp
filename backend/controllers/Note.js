@@ -148,6 +148,39 @@ export const updateNote = async (req, res) => {
   }
 };
 
+// function update Note isPinned
+export const updateNotePinned = async (req, res) => {
+  const noteUuid = req.params.id;
+  const { isPinned } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const note = await Note.findOne({
+      where: {
+        uuid: noteUuid,
+        userId: userId,
+      },
+    });
+
+    if (!note) {
+      return res.status(404).json({ message: "Note not found!" });
+    }
+
+    note.isPinned = isPinned;
+
+    await note.save();
+
+    return res.json({
+      note,
+      message: "Note updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//
+
 // Function Delete Note
 export const deleteNote = async (req, res) => {
   try {
