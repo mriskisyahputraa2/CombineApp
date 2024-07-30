@@ -152,7 +152,7 @@ const NoteList = () => {
             <p className="text-xs text-slate-800 mb-4">By: {note.user.name}</p>
             <div className="flex mt-auto justify-end space-x-2">
               <Link
-                to={`notes/edit/${note.uuid}`}
+                to={`/notes/edit/${note.uuid}`}
                 className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
                 aria-label="edit note"
               >
