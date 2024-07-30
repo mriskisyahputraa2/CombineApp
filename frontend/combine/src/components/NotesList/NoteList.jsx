@@ -4,24 +4,33 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { MdAdd } from "react-icons/md";
+import Swal from "sweetalert2";
 
 const NoteList = () => {
-  const [notes, setNotes] = useState([]);
-  // const [openAddModal, setOpenAddModal] = useState(false);
+  const [notes, setNotes] = useState([]); // state array yang menyimpan daftar catatan(note).
 
+  // function get all notes
   const getAllNote = async () => {
     const response = await axios.get("http://localhost:8080/get-all-notes");
-    setNotes(response.data);
+
+    // mengurutkan catatan(note) berdasarkan isPinned==(true) & tanggal yang muncul terlebih dahulu
+    const sortedNotes = response.data.sort(
+      (a, b) => b.isPinned - a.isPinned || new Date(b.date) - new Date(a.date)
+    );
+    setNotes(sortedNotes); // menyimpan catatan(note) yang sudah diurutakan
   };
 
+  // memanggil getAllNote yang dirender dari sisi server
   useEffect(() => {
     getAllNote();
   }, []);
 
+  // function delete notes berdasarkan id
   const deleteNotes = async (notesId) => {
-    // switch alert delete product
+    // swall alert notification delete notes
     Swal.fire({
       title: "Are you sure you want to delete this?",
       text: "You won't be able to revert this!",
@@ -34,32 +43,79 @@ const NoteList = () => {
       if (result.isConfirmed) {
         await axios.delete(`http://localhost:8080/delete-notes/${notesId}`);
         Swal.fire("Deleted!", "Your product has been deleted.", "success");
-        getAllNote(); // Refresh product list after deletion
+        getAllNote();
       }
     });
   };
+
+  // function updated is Pinned
   const updatedIsPinned = async (noteData) => {
-    const noteId = noteData._id;
+    const noteId = noteData.uuid; // mengambil note uuid
+    const newIsPinnedStatus = !noteData.isPinned; // mengubah status isPinned true or false
 
     try {
-      const response = await axios.patch(
-        `http://localhost:8080/update-notes/${noteId}`,
+      // mengirim permintaan PUT ke API untuk memperbarui status pinned.
+      const response = await axios.put(
+        `http://localhost:8080/update-note-pinned/${noteId}`,
         {
-          isPinned: !noteData.isPinned,
+          isPinned: newIsPinnedStatus,
         }
       );
 
-      if (response.data && response.data.notes) {
-        alert("Pinned Notes");
-        getAllNote();
+      // validasi, jika response is pinned "true", tampilkan swalt alert true
+      if (response.data && response.data.note) {
+        if (newIsPinnedStatus) {
+          toast.success("This note has been pinned to the top of your list.", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+
+          // jika response is pinned 'false',  tampilkan swalt alert false
+        } else {
+          toast.info("This note has been unpinned.", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
+        getAllNote(); // render data catatan(note) yang baru
       }
     } catch (error) {
-      console.log(error);
+      toast.error("An error occurred while updating the note.", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
   return (
     <div className="p-6">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ top: "63px" }}
+      />
       <h1 className="text-3xl font-bold mb-4 text-gray-800">Notes</h1>
       <h2 className="text-xl font-semibold mb-4 text-gray-700">
         List of Notes
@@ -72,22 +128,18 @@ const NoteList = () => {
           >
             <div className="flex justify-between items-start mb-4">
               <div className="flex flex-col flex-grow">
-                {/* Ensure title and date do not affect the icon */}
                 <h3 className="text-sm font-medium mr-2">{note.title}</h3>
                 <span className="text-xs text-slate-500 mt-2">
                   {moment(note.date).format("Do MMM YYYY")}
                 </span>
               </div>
               <div className="flex-none">
-                {" "}
-                {/* Ensures icon stays its size */}
                 <MdOutlinePushPin
                   className={`text-2xl cursor-pointer ${
                     note.isPinned ? "text-blue-500" : "text-gray-400"
                   }`}
-                  style={{ width: "16px", height: "16px" }} // Fixed size
-                  // onClick={note.onPinNote}
-                  onClick={updatedIsPinned}
+                  style={{ width: "16px", height: "16px" }}
+                  onClick={() => updatedIsPinned(note)}
                 />
               </div>
             </div>
@@ -95,7 +147,7 @@ const NoteList = () => {
               {note.content.slice(0, 100)}
             </p>
             <p className="text-xs text-slate-500 mb-4">
-              {`#${note.tags.join(" ")}`}
+              {note.tags.map((tag) => `#${tag}`).join(" ")}
             </p>
             <p className="text-xs text-slate-800 mb-4">By: {note.user.name}</p>
             <div className="flex mt-auto justify-end space-x-2">

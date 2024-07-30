@@ -29,19 +29,15 @@ const FormAddNote = () => {
     }
   };
 
+  // function add tags
   const addTag = () => {
     if (tagInput.trim()) {
       setTags([...tags, tagInput.trim()]);
       setTagInput("");
     }
   };
-  const handleKeyDown = (e) => {
-    //  jika tombol "Enter" ditekan
-    if (e.key === "Enter") {
-      addTag(); // maka tambahkan tag
-    }
-  };
 
+  // function remove tags
   const removeTag = (tagToRemove) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
@@ -86,6 +82,7 @@ const FormAddNote = () => {
             />
           </div>
 
+          {/* tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Tags
@@ -111,7 +108,6 @@ const FormAddNote = () => {
                 className="text-sm bg-transparent border px-3 py-2 rounded outline-none"
                 placeholder="Enter tags"
                 value={tagInput}
-                onKeyDown={handleKeyDown}
                 onChange={(e) => setTagInput(e.target.value)}
               />
               <button
