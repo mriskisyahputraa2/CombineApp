@@ -12,6 +12,7 @@ import EditBooks from "./pages/Books/EditBooks";
 import Notes from "./pages/Notes/Notes";
 import AddNotes from "./pages/Notes/AddNotes";
 import EditNotes from "./pages/Notes/EditNotes";
+import Weathers from "./pages/Weathers/Weathers";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/notes/" exact element={<Notes />} />
           <Route path="/notes/add" exact element={<AddNotes />} />
           <Route path="/notes/edit/:id" exact element={<EditNotes />} />
+          <Route path="/weather" exact element={<Weathers />} />
         </Routes>
       </Router>
     </>
