@@ -10,10 +10,7 @@ import ProductRoute from "./routes/ProductRoute.js";
 import BookRoute from "./routes/BookRoute.js";
 import NoteRoute from "./routes/NoteRoute.js";
 import WeatherRoute from "./routes/WeatherRoute.js";
-// import User from "./models/UserModel.js";
-// import Product from "./models/ProductModel.js";
-// import Book from "./models/BookModel.js";
-// import Note from "./models/NoteModel.js";
+import SearchRoute from "./routes/SearchRoute.js";
 
 // mengizinkan menggunakan .env diakses
 dotenv.config();
@@ -65,7 +62,7 @@ app.use(
 app.use(express.json());
 
 // sinkronisasi database session
-store.sync();
+// store.sync();
 
 // middleware routes
 app.use(UserRoute);
@@ -74,6 +71,7 @@ app.use(ProductRoute);
 app.use(BookRoute);
 app.use(NoteRoute);
 app.use(WeatherRoute);
+app.use(SearchRoute);
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Server up and running");

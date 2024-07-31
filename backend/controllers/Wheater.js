@@ -1,17 +1,21 @@
 import axios from "axios";
 
 export const getWeather = async (req, res) => {
-  const { city } = req.query; // mengambil parameter query city dari request URL.
-  const apiKey = process.env.WEATHER_API_KEY; // API key untuk mengakses OpenWeatherMap yang diambil dari file .env
+  const { city } = req.query;
+  const apiKey = process.env.WEATHER_API_KEY;
 
   try {
-    // mengirimkan permintaan GET ke API OpenWeatherMap dengan parameter kota dan API key.
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
     );
-    // mengirimkan data cuaca dari API sebagai respons JSON ke klien.
     res.json(response.data);
   } catch (error) {
-    res.status(500).send("Error fetching weather data");
+    if (error.response && error.response.status === 404) {
+      // Kirim status 404 jika kota tidak ditemukan
+      res.status(404).json({ message: "City not found" });
+    } else {
+      // Kirim status 500 untuk kesalahan lainnya
+      res.status(500).json({ message: "Error fetching weather data" });
+    }
   }
 };
