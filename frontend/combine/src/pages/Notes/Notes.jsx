@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../Layout/Layout";
 import NoteList from "../../components/NotesList/NoteList";
 import { useDispatch, useSelector } from "react-redux";

@@ -216,7 +216,7 @@ const WeatherApp = () => {
         pauseOnHover
         draggable
         progress={undefined}
-        className="mt-16" // Adjust the margin to position it lower
+        className="mt-12" // Adjust the margin to position it lower
       />
     </div>
   );

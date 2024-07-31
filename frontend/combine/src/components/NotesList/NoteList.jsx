@@ -8,20 +8,41 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdAdd } from "react-icons/md";
 import Swal from "sweetalert2";
+import EmptyCard from "../EmptyCard/EmptyCard";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
+import SearchBar from "../SearchBar/SearchBar";
 
-const NoteList = () => {
+const NoteList = (value) => {
   const [notes, setNotes] = useState([]); // state array yang menyimpan daftar catatan(note).
+  const [isSearch, setIsSearch] = useState(false);
 
   // function get all notes
   const getAllNote = async () => {
-    const response = await axios.get("http://localhost:8080/get-all-notes");
+    try {
+      const response = await axios.get("http://localhost:8080/get-all-notes");
 
-    // mengurutkan catatan(note) berdasarkan isPinned==(true) & tanggal yang muncul terlebih dahulu
-    const sortedNotes = response.data.sort(
-      (a, b) => b.isPinned - a.isPinned || new Date(b.date) - new Date(a.date)
-    );
-    setNotes(sortedNotes); // menyimpan catatan(note) yang sudah diurutakan
+      // mengurutkan catatan(note) berdasarkan isPinned==(true) & tanggal yang muncul terlebih dahulu
+      const sortedNotes = response.data.sort(
+        (a, b) => b.isPinned - a.isPinned || new Date(b.date) - new Date(a.date)
+      );
+
+      if (response.data && response.data.notes) {
+        setNotes(response.data.notes);
+        setIsSearch(false);
+      }
+
+      setNotes(sortedNotes); // menyimpan catatan(note) yang sudah diurutakan
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.");
+    }
   };
+
+  // const onSearchNote = async (query) => {
+  //   try{
+
+  //   }
+  // }
 
   // memanggil getAllNote yang dirender dari sisi server
   useEffect(() => {
@@ -104,6 +125,7 @@ const NoteList = () => {
 
   return (
     <div className="p-6">
+      {/* toast message */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -120,58 +142,74 @@ const NoteList = () => {
       <h2 className="text-xl font-semibold mb-4 text-gray-700">
         List of Notes
       </h2>
-      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {notes.map((note) => (
-          <div
-            key={note.uuid}
-            className="bg-white rounded-lg border mb-6 p-4 flex flex-col relative"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex flex-col flex-grow">
-                <h3 className="text-sm font-medium mr-2">{note.title}</h3>
-                <span className="text-xs text-slate-500 mt-2">
-                  {moment(note.date).format("Do MMM YYYY")}
-                </span>
+
+      {/* start search */}
+      <div className="flex items-center justify-center px-4 bg-white rounded-full mb-6 mx-auto drop-shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <SearchBar />
+      </div>
+      {/* end search */}
+
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {/* list notes */}
+        {notes.length > 0 ? (
+          notes.map((note) => (
+            <div
+              key={note.uuid}
+              className="bg-white rounded-lg border p-4 flex flex-col relative"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex flex-col flex-grow">
+                  <h3 className="text-sm font-medium mb-1">{note.title}</h3>
+                  <span className="text-xs text-slate-500">
+                    {moment(note.date).format("Do MMM YYYY")}
+                  </span>
+                </div>
+                <div className="flex-none">
+                  <MdOutlinePushPin
+                    className={`text-2xl cursor-pointer ${
+                      note.isPinned ? "text-blue-500" : "text-gray-400"
+                    }`}
+                    style={{ width: "16px", height: "16px" }}
+                    onClick={() => updatedIsPinned(note)}
+                  />
+                </div>
               </div>
-              <div className="flex-none">
-                <MdOutlinePushPin
-                  className={`text-2xl cursor-pointer ${
-                    note.isPinned ? "text-blue-500" : "text-gray-400"
-                  }`}
-                  style={{ width: "16px", height: "16px" }}
-                  onClick={() => updatedIsPinned(note)}
-                />
+              <p className="text-xs text-slate-600 mb-4">
+                {note.content.slice(0, 100)}
+              </p>
+              <p className="text-xs text-slate-500 mb-4">
+                {note.tags.map((tag) => `#${tag}`).join(" ")}
+              </p>
+              <p className="text-xs text-slate-800 mb-4">
+                By: {note.user.name}
+              </p>
+              <div className="flex mt-auto justify-end space-x-2">
+                <Link
+                  to={`/notes/edit/${note.uuid}`}
+                  className="inline-flex items-center p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
+                  aria-label="edit note"
+                >
+                  <IoPencil className="w-[15px] h-[15px]" />
+                </Link>
+                <button
+                  onClick={() => deleteNotes(note.uuid)}
+                  type="button"
+                  className="inline-flex items-center p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
+                  aria-label="Delete"
+                >
+                  <IoTrash className="w-[15px] h-[15px]" />
+                </button>
               </div>
             </div>
-            <p className="text-xs text-slate-600 mb-4">
-              {note.content.slice(0, 100)}
-            </p>
-            <p className="text-xs text-slate-500 mb-4">
-              {note.tags.map((tag) => `#${tag}`).join(" ")}
-            </p>
-            <p className="text-xs text-slate-800 mb-4">By: {note.user.name}</p>
-            <div className="flex mt-auto justify-end space-x-2">
-              <Link
-                to={`/notes/edit/${note.uuid}`}
-                className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
-                aria-label="edit note"
-              >
-                <IoPencil className="w-[15px] h-[15px]" />
-              </Link>
-              <button
-                onClick={() => deleteNotes(note.uuid)}
-                type="button"
-                className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
-                aria-label="Delete"
-              >
-                <IoTrash className="w-[15px] h-[15px]" />
-              </button>
-            </div>
+          ))
+        ) : (
+          <div className="flex items-center justify-center">
+            <EmptyCard />
           </div>
-        ))}
+        )}
         <Link
-          to={"/notes/add"}
-          className="w-14 h-14 flex items-center justify-center rounded-2xl bg-green-600 hover:bg-green-700 fixed right-4 bottom-4 md:right-10 md:bottom-10 shadow-lg font-semibold"
+          to="/notes/add"
+          className="w-14 h-14 flex items-center justify-center rounded-full bg-green-600 hover:bg-green-700 fixed right-4 bottom-4 md:right-10 md:bottom-10 shadow-lg font-semibold"
         >
           <MdAdd className="text-[32px] text-white" />
         </Link>
