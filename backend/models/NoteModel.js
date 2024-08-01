@@ -22,7 +22,7 @@ const Note = db.define(
     },
 
     content: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT, // Menggunakan TEXT untuk konten yang lebih panjang
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -31,11 +31,8 @@ const Note = db.define(
 
     tags: {
       type: DataTypes.JSON,
-      defaultValue: [],
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+      defaultValue: [], // Default adalah array kosong
+      allowNull: true, // `tags` bisa kosong
     },
 
     isPinned: {

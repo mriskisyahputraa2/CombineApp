@@ -87,17 +87,22 @@ export const getNoteById = async (req, res) => {
 export const createNote = async (req, res) => {
   const { title, content, tags, isPinned } = req.body;
 
+  if (!title || !content) {
+    return res.status(400).json({ message: "Title and content are required." });
+  }
   try {
     await Note.create({
-      title: title,
-      content: content,
-      tags: tags,
-      isPinned: isPinned,
+      title,
+      content,
+      tags: tags || [], // Pastikan `tags` adalah array kosong jika tidak diberikan
+      isPinned: isPinned || false, // Set default jika tidak diberikan
       userId: req.userId,
     });
     res.status(200).json({ message: "Note created successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
