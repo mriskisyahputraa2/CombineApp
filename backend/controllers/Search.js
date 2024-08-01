@@ -1,18 +1,19 @@
 import Note from "../models/NoteModel.js";
-import { Op } from "sequelize"; // import opertor
+import { Op } from "sequelize"; // import operator
+import User from "../models/UserModel.js"; // import model user
 
 export const searchNote = async (req, res) => {
-  // validasi , mengecek apakah req user dan uuid ada atau tidak, jika tidak
+  // Validasi, mengecek apakah req user dan uuid ada atau tidak
   if (!req.user || !req.user.uuid) {
     return res.status(401).json({
       message: "Unauthorized: User information not available", // tampilkan pesan
     });
   }
 
-  // mendapatkan query yang dimasukkan pengguna
+  // Mendapatkan query yang dimasukkan pengguna
   const { query } = req.query;
 
-  // validasi query jika tidak ada
+  // Validasi query jika tidak ada
   if (!query) {
     return res.status(400).json({
       message: "Search query is required",
@@ -20,28 +21,32 @@ export const searchNote = async (req, res) => {
   }
 
   try {
-    // mencari(search) data note sesuai yang didatabase
-    const matchingNotes = await Note.findAll({
-      where: {
-        userId: req.user.id, // berdasarkan user id
+    // Mencari data user berdasarkan userId
+    const user = await User.findOne({ where: { id: req.user.id } });
 
-        // mencari catatan di mana title atau content cocok dengan query pencarian.
-        [Op.or]: [
-          // digunakan untuk pencarian substring yang case-insensitive dalam title atau content.
-          { title: { [Op.like]: `%${query}%` } },
-          { content: { [Op.like]: `%${query}%` } },
-        ],
-      },
-    });
+    let searchCriteria = {
+      [Op.or]: [
+        { title: { [Op.like]: `%${query}%` } },
+        { content: { [Op.like]: `%${query}%` } },
+      ],
+    };
 
-    // jika search note tidak ditemukan atau tidak cocok
+    // Jika pengguna adalah admin, mereka bisa melihat semua catatan
+    if (user.role !== "admin") {
+      searchCriteria.userId = req.user.id; // Hanya catatan pengguna tersebut
+    }
+
+    // Mencari data note yang cocok dengan query
+    const matchingNotes = await Note.findAll({ where: searchCriteria });
+
+    // Jika tidak ditemukan catatan yang cocok
     if (matchingNotes.length === 0) {
       return res.status(404).json({
         message: "No notes found matching the search query",
       });
     }
 
-    // jika cocok tampilkan datanya
+    // Jika cocok tampilkan datanya
     return res.json({
       notes: matchingNotes,
       message: "Notes matching the search query retrieved successfully",
