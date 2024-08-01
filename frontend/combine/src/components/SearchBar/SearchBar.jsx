@@ -10,6 +10,7 @@ const SearchBar = ({ onSearchNote, handleClearSearch }) => {
       onSearchNote({ query });
     }
   };
+
   const handleInputChange = (e) => {
     setQuery(e.target.value);
     if (e.target.value.trim() === "") {

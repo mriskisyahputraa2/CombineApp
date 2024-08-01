@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const FormAddBook = () => {
@@ -49,6 +50,12 @@ const FormAddBook = () => {
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
+              <Link
+                to="/books"
+                className="inline-block px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200"
+              >
+                Cancel
+              </Link>
               <form onSubmit={saveBook} className="space-y-6">
                 <p>{msg}</p>
                 <div className="mb-4">
@@ -101,7 +108,7 @@ const FormAddBook = () => {
                   />
                 </div>
 
-                <div className="flex justify-end">
+                <div className="flex justify-end ">
                   <button
                     type="submit"
                     className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-medium text-sm leading-5 rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-150"

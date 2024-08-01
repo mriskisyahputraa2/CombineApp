@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const FormEditBook = () => {
@@ -70,6 +71,12 @@ const FormEditBook = () => {
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
+              <Link
+                to="/books"
+                className="inline-block px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition duration-200"
+              >
+                Cancel
+              </Link>
               <form onSubmit={updateBook} className="space-y-6">
                 <p>{msg}</p>
                 <div className="mb-4">

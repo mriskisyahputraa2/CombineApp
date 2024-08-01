@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
 import Swal from "sweetalert2";
+import EmptyProduct from "../EmptyProduct/EmptyProduct";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -63,84 +64,96 @@ const ProductList = () => {
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                <thead>
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
-                    >
-                      No
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
-                    >
-                      Product Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
-                    >
-                      Brand
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
-                    >
-                      Price
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
-                    >
-                      Created By
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-end text-sm text-black font-bold uppercase "
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                  {products.map((product, index) => (
-                    <tr key={product.uuid}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {product.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {product.brand}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {formatRupiah(product.price)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
-                        {product.user.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium ">
-                        <Link
-                          to={`/products/edit/${product.uuid}`}
-                          className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
-                          aria-label="Edit"
+                {products.length > 0 ? (
+                  <>
+                    <thead>
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
                         >
-                          <IoPencil className="w-[15px] h-[15px]" />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => deleteProduct(product.uuid)}
-                          className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
-                          aria-label="Delete"
+                          No
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
                         >
-                          <IoTrash className="w-[15px] h-[15px]" />
-                        </button>
+                          Product Name
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
+                        >
+                          Brand
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
+                        >
+                          Price
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase "
+                        >
+                          Created By
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-end text-sm text-black font-bold uppercase "
+                        >
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                      {products.map((product, index) => (
+                        <tr key={product.uuid}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                            {index + 1}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                            {product.name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                            {product.brand}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                            {formatRupiah(product.price)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-80">
+                            {product.user.name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium ">
+                            <Link
+                              to={`/products/edit/${product.uuid}`}
+                              className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
+                              aria-label="Edit"
+                            >
+                              <IoPencil className="w-[15px] h-[15px]" />
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => deleteProduct(product.uuid)}
+                              className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
+                              aria-label="Delete"
+                            >
+                              <IoTrash className="w-[15px] h-[15px]" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </>
+                ) : (
+                  <tbody>
+                    <tr>
+                      <td>
+                        <EmptyProduct />
                       </td>
                     </tr>
-                  ))}
-                </tbody>
+                  </tbody>
+                )}
               </table>
             </div>
           </div>

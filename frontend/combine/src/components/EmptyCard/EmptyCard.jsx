@@ -1,5 +1,5 @@
 import React from "react";
-import noDataImg from "../../assets/images/no-data.jpg";
+// import noDataImg from "../../assets/images/no-data.jpg";
 import addNotesImg from "../../assets/images/add-note.svg";
 
 const EmptyCard = () => {

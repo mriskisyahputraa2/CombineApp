@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { MdClose, MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 
 const FormAddNote = () => {
   const [title, setTitle] = useState("");
@@ -126,6 +127,12 @@ const FormAddNote = () => {
           >
             Add Note
           </button>
+          <Link
+            to={"/notes"}
+            className="w-full p-3 bg-gray-600 text-white rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 text-center"
+          >
+            Cancel
+          </Link>
         </div>
       </form>
     </div>
