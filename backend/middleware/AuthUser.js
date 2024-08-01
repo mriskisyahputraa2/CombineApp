@@ -1,4 +1,28 @@
 import User from "../models/UserModel.js";
+import argon2 from "argon2";
+
+export const createAdmin = async () => {
+  try {
+    const adminExists = await User.findOne({
+      where: { email: "rizkiAdmin@gmail.com" },
+    });
+
+    if (!adminExists) {
+      const hashedPassword = await argon2.hash("admin");
+      await User.create({
+        name: "Muhammad Rizki Syahputra",
+        email: "rizkiAdmin@gmail.com",
+        password: hashedPassword,
+        role: "admin", // Set role untuk admin
+      });
+      console.log("Admin user created successfully");
+    } else {
+      console.log("Admin user already exists");
+    }
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+  }
+};
 
 // verifyUser ketika user ketika login
 export const verifyUser = async (req, res, next) => {

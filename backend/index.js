@@ -11,6 +11,7 @@ import BookRoute from "./routes/BookRoute.js";
 import NoteRoute from "./routes/NoteRoute.js";
 import WeatherRoute from "./routes/WeatherRoute.js";
 import SearchRoute from "./routes/SearchRoute.js";
+import { createAdmin } from "./middleware/AuthUser.js";
 
 // mengizinkan menggunakan .env diakses
 dotenv.config();
@@ -32,6 +33,11 @@ const store = new sessionStore({
 //     console.error("Unable to sync database:", error);
 //   }
 // })();
+
+// Panggil fungsi createAdmin ketika seeding
+// createAdmin().then(() => {
+//   process.exit(0); // Keluar setelah seeding selesai
+// });
 
 // (async () => {
 //   await db.sync();
@@ -72,6 +78,7 @@ app.use(BookRoute);
 app.use(NoteRoute);
 app.use(WeatherRoute);
 app.use(SearchRoute);
+app.use(createAdmin);
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Server up and running");

@@ -19,7 +19,7 @@ export const Login = async (req, res) => {
 
     // validasi, jika email pengguna tidak ditemukan
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Email not found!" });
     }
 
     // verifikasi password pengguna dengan password di database, jika cocok hash lagi
@@ -27,7 +27,7 @@ export const Login = async (req, res) => {
 
     // validasi jika password tidak cocok
     if (!match) {
-      return res.status(400).json({ message: "Wrong password!" });
+      return res.status(400).json({ message: "Incorrect password!" });
     }
 
     // membuat token jwt payload berisi userId dan role pengguna
