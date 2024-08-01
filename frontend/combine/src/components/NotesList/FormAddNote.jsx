@@ -15,7 +15,7 @@ const FormAddNote = () => {
 
   const saveNote = async (e) => {
     e.preventDefault(); // Mencegah refresh halaman saat submit form
-    if (content.length > 100) {
+    if (content.length > 255) {
       Swal.fire({
         icon: "error",
         title: "Oops...",

@@ -9,6 +9,28 @@ const initialState = {
   message: "",
 };
 
+// Function Thunks Asinkron untuk registrasi
+export const registerUser = createAsyncThunk(
+  "user/registerUser",
+  async (user, thunkAPI) => {
+    try {
+      const response = await axios.post("http://localhost:8080/users", {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        // role: user.role,
+      });
+      return response.data;
+    } catch (error) {
+      const message =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 // Function Thunks Asinkron untuk login
 export const LoginUser = createAsyncThunk(
   "user/LoginUser",
@@ -91,6 +113,26 @@ export const authSlice = createSlice({
 
     // GetMe if failed
     builder.addCase(getMe.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+
+    // start app register
+    builder.addCase(registerUser.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    // register if success
+    builder.addCase(registerUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = action.payload.user;
+      state.message = action.payload.message;
+    });
+
+    // register if failed
+    builder.addCase(registerUser.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;

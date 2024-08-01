@@ -45,16 +45,18 @@ const NoteList = () => {
           setNotes(response.data.notes);
           setIsSearch(true);
         } else {
-          setNotes([]);
-          setIsSearch(true);
           toast.error("No notes found matching the search query");
+          // Memuat ulang semua catatan jika tidak ada hasil
+          getAllNote();
+          setIsSearch(false);
         }
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        setNotes([]);
-        setIsSearch(true);
         toast.error("No notes found matching the search query");
+        // Memuat ulang semua catatan jika tidak ada hasil
+        getAllNote();
+        setIsSearch(false);
       } else {
         toast.error("An error occurred while searching for notes");
       }
@@ -111,7 +113,7 @@ const NoteList = () => {
         getAllNote();
       }
     } catch (error) {
-      toast.error("An error occurred while updating the note.");
+      toast.error("Should not be pinned to other user records");
     }
   };
 
@@ -159,7 +161,7 @@ const NoteList = () => {
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 mb-4">
-                    {note.content.slice(0, 100)}
+                    {note.content.slice(0, 255)}
                   </p>
                   <p className="text-xs text-slate-500 mb-4">
                     {note.tags.map((tag) => `#${tag}`).join(" ")}

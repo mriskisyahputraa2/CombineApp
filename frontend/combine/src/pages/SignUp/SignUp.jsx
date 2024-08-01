@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { LoginUser, reset } from "../../features/authSlice";
+import { registerUser, reset } from "../../features/authSlice";
 import { Link } from "react-router-dom";
 
 const SignUp = () => {
@@ -15,9 +15,9 @@ const SignUp = () => {
     (state) => state.auth
   );
 
-  const Auth = (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
-    dispatch(LoginUser({ email, password }));
+    dispatch(registerUser({ name, email, password }));
   };
 
   useEffect(() => {
@@ -26,11 +26,12 @@ const SignUp = () => {
     }
     dispatch(reset());
   }, [user, isSuccess, dispatch, navigate]);
+
   return (
     <section className="bg-gray-500 min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md mx-auto p-4">
         <form
-          onSubmit={Auth}
+          onSubmit={handleSignUp}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
         >
           {isError && <p className="text-center text-red-500">{message}</p>}
