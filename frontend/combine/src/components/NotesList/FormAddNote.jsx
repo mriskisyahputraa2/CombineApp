@@ -3,19 +3,26 @@ import React, { useState } from "react";
 import { MdClose, MdAdd } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const FormAddNote = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
-  // const [tags, setTags] = useState(noteData?.tags || []);
   const [msg, setMsg] = useState("");
   const [tagInput, setTagInput] = useState("");
   const navigate = useNavigate();
 
   const saveNote = async (e) => {
     e.preventDefault(); // Mencegah refresh halaman saat submit form
-
+    if (content.length > 100) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Sorry, content can only be entered in a maximum of 100 characters",
+      });
+      return;
+    }
     try {
       await axios.post("http://localhost:8080/create-notes", {
         title,
@@ -25,12 +32,12 @@ const FormAddNote = () => {
       navigate("/notes");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        setMsg(error.response.data.message); // Pastikan field message sesuai dengan response backend
       }
     }
   };
 
-  // function add tags
+  // Fungsi untuk menambahkan tag
   const addTag = () => {
     if (tagInput.trim()) {
       setTags([...tags, tagInput.trim()]);
@@ -38,7 +45,7 @@ const FormAddNote = () => {
     }
   };
 
-  // function remove tags
+  // Fungsi untuk menghapus tag
   const removeTag = (tagToRemove) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
@@ -83,7 +90,7 @@ const FormAddNote = () => {
             />
           </div>
 
-          {/* tags */}
+          {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Tags

@@ -159,7 +159,7 @@ const NoteList = () => {
                     </div>
                   </div>
                   <p className="text-xs text-slate-600 mb-4">
-                    {note.content.slice()}
+                    {note.content.slice(0, 100)}
                   </p>
                   <p className="text-xs text-slate-500 mb-4">
                     {note.tags.map((tag) => `#${tag}`).join(" ")}
