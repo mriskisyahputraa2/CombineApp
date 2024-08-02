@@ -37,7 +37,15 @@ export const searchNote = async (req, res) => {
     }
 
     // Mencari data note yang cocok dengan query
-    const matchingNotes = await Note.findAll({ where: searchCriteria });
+    const matchingNotes = await Note.findAll({
+      where: searchCriteria,
+      include: [
+        {
+          model: User,
+          attribute: ["name"],
+        },
+      ],
+    });
 
     // Jika tidak ditemukan catatan yang cocok
     if (matchingNotes.length === 0) {

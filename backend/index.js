@@ -34,7 +34,7 @@ const store = new sessionStore({
 //   }
 // })();
 
-// Panggil fungsi createAdmin ketika seeding
+// Panggil fungsi createAdmin ketika seeding (untuk menetukan siapa adminnya)
 // createAdmin().then(() => {
 //   process.exit(0); // Keluar setelah seeding selesai
 // });

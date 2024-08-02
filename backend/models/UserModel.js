@@ -44,9 +44,10 @@ const User = db.define(
 
     role: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false, // Tidak mengizinkan nilai kosong
+      defaultValue: "user", // Set default value ke "user"
       validate: {
-        notEmpty: true,
+        notEmpty: true, // Memastikan tidak kosong
       },
     },
   },

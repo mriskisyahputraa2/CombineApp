@@ -1,6 +1,7 @@
 import User from "../models/UserModel.js";
 import argon2 from "argon2";
 
+// function createAdmin
 export const createAdmin = async () => {
   try {
     const adminExists = await User.findOne({
