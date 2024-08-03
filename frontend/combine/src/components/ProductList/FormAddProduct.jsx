@@ -17,6 +17,11 @@ const FormAddProduct = () => {
   const saveProduct = async (e) => {
     e.preventDefault();
 
+    if (price < 0) {
+      toast.error("Prices should not be entered with a minus price");
+      return;
+    }
+
     // Membuat instance FormData
     const formData = new FormData();
     formData.append("name", name);

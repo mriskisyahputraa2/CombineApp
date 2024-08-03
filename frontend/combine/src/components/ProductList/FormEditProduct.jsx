@@ -35,6 +35,12 @@ const FormEditProduct = () => {
   const updateProduct = async (e) => {
     e.preventDefault();
 
+    // validasi, jika pengguna ingin memasukkan price dengan harga minus
+    if (price < 0) {
+      toast.error("Prices should not be entered with a minus price");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("brand", brand);

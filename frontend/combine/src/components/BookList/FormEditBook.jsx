@@ -2,9 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import Toast from "../ToastMessage/Toast";
 
 const FormEditBook = () => {
+  const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [genre, setGenre] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -33,6 +36,13 @@ const FormEditBook = () => {
   const updateBook = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("genre", genre);
+    formData.append("deadline", deadline);
+
+    if (file) formData.append("image", file);
+
     // inisialisasi format date
     const tanggalSaatIni = new Date();
     const tanggalMasuk = new Date(deadline);
@@ -50,21 +60,23 @@ const FormEditBook = () => {
 
     // if date format validation is successful, continue the book update
     try {
-      await axios.patch(`http://localhost:8080/update-books/${id}`, {
-        name,
-        genre,
-        deadline,
+      await axios.patch(`http://localhost:8080/update-books/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       navigate("/books");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        setMsg(error.response.data.message);
+        toast.error(error.response.data.message);
       }
     }
   };
 
   return (
     <div className="p-6">
+      <Toast />
       <h1 className="text-3xl font-bold mb-4 text-gray-800 ">Books</h1>
       <h2 className="text-xl font-semibold mb-4 text-gray-700">Update Book</h2>
       <div className="flex flex-col">
@@ -79,6 +91,21 @@ const FormEditBook = () => {
               </Link>
               <form onSubmit={updateBook} className="space-y-6">
                 <p>{msg}</p>
+                <div className="mb-4">
+                  <label
+                    htmlFor="image"
+                    className="block text-sm font-bold text-black"
+                  >
+                    Image
+                  </label>
+                  <input
+                    id="image"
+                    type="file"
+                    onChange={(e) => setFile(e.target.files[0])}
+                    className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                    required
+                  />
+                </div>
                 <div className="mb-4">
                   <label
                     htmlFor="name"

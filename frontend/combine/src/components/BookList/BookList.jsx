@@ -89,6 +89,12 @@ const BookList = () => {
                           scope="col"
                           className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
                         >
+                          Image
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                        >
                           Book Name
                         </th>
                         <th
@@ -122,6 +128,20 @@ const BookList = () => {
                         <tr key={book.uuid}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                             {index + 1}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                            {book.imageUrl ? (
+                              <img
+                                src={book.imageUrl}
+                                alt={book.name}
+                                className="w-12 h-12 object-cover"
+                                onError={(e) =>
+                                  (e.target.style.display = "none")
+                                }
+                              />
+                            ) : (
+                              <span>No Image</span>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                             {book.name}

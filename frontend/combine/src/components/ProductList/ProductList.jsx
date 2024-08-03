@@ -17,7 +17,7 @@ const ProductList = () => {
       const response = await axios.get(
         "http://localhost:8080/get-all-products"
       );
-      console.log(response.data); // Log data untuk memeriksa formatnya
+      // console.log(response.data); // Log data untuk memeriksa formatnya
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
