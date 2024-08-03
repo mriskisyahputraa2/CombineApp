@@ -14,6 +14,7 @@ const ProfileInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // mendapatkan role pengguna
   useEffect(() => {
     const getUserProfile = async () => {
       try {
@@ -31,10 +32,13 @@ const ProfileInfo = () => {
 
     getUserProfile();
   }, []);
+
+  // toggleMenu
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
+  // logout
   const logout = () => {
     localStorage.removeItem("token");
     dispatch(logOut());
@@ -65,7 +69,7 @@ const ProfileInfo = () => {
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
           <div className="py-2 px-4 text-gray-800">
             <h3 className="font-bold ml-4">
-              {user.role === "admin" ? "Admin" : "User"}
+              {user.role === "admin" ? "Admin" : user.name}
             </h3>
             <Link
               to={"/settings"}
