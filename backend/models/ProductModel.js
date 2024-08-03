@@ -10,6 +10,7 @@ const Product = db.define(
     uuid: {
       type: DataTypes.STRING,
       defaultValue: DataTypes.UUIDV4,
+      // primaryKey: true,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -44,6 +45,11 @@ const Product = db.define(
       validate: {
         notEmpty: true,
       },
+    },
+    imageUrl: {
+      // Menambahkan kolom imageUrl
+      type: DataTypes.STRING,
+      allowNull: true, // Gambar mungkin tidak selalu ada
     },
   },
   {
