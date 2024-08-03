@@ -11,6 +11,7 @@ import {
   IoCloud,
   IoDocumentText,
 } from "react-icons/io5";
+import ProfileInfo from "../ProfileInfo/ProfileInfo";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className=" bg-gray-100">
+    <div className="bg-gray-100">
       <nav className="bg-white border-b border-gray-200 shadow-md fixed w-full z-50">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -42,36 +43,7 @@ const Navbar = () => {
             </div>
 
             <div className="hidden md:flex md:items-center md:space-x-4">
-              <NavLink
-                to="/dashboard"
-                className="text-gray-900 hover:text-blue-500 transition-colors"
-              >
-                Home
-              </NavLink>
-              <NavLink
-                to="/products"
-                className="text-gray-900 hover:text-blue-500 transition-colors"
-              >
-                Products
-              </NavLink>
-              <NavLink
-                to="/books"
-                className="text-gray-900 hover:text-blue-500 transition-colors"
-              >
-                Books
-              </NavLink>
-              <NavLink
-                to="/notes"
-                className="text-gray-900 hover:text-blue-500 transition-colors"
-              >
-                Notes
-              </NavLink>
-              <button
-                onClick={logout}
-                className="underline text-gray-900 transition-colors font-bold"
-              >
-                Logout
-              </button>
+              <ProfileInfo />
             </div>
             <div className="md:hidden flex items-center">
               <button
@@ -89,22 +61,22 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Start responsive navbar sidebar */}
+      {/* Responsive navbar sidebar */}
       <aside
         className={`fixed top-0 left-0 z-40 w-64 h-screen bg-gray-50 border-r border-gray-200 transition-transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto">
-          <ul className="space-y-2 font-medium mt-20">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+          <ul className="space-y-2 font-medium mt-16">
             <li>
               <NavLink
                 to="/dashboard"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoHome
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Dashboard</span>
@@ -113,10 +85,10 @@ const Navbar = () => {
             <li>
               <NavLink
                 to="/products"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoPricetag
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Products</span>
@@ -125,10 +97,10 @@ const Navbar = () => {
             <li>
               <NavLink
                 to="/books"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoBook
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Books</span>
@@ -137,10 +109,10 @@ const Navbar = () => {
             <li>
               <NavLink
                 to="/notes"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoDocumentText
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Notes</span>
@@ -149,10 +121,10 @@ const Navbar = () => {
             <li>
               <NavLink
                 to="/weather"
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoCloud
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Weather</span>
@@ -162,10 +134,10 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={logout}
-                className="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
               >
                 <IoLogOut
-                  className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                  className="w-5 h-5 text-gray-500 transition duration-75"
                   aria-hidden="true"
                 />
                 <span className="ms-3">Logout</span>

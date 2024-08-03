@@ -128,6 +128,14 @@ const Sidebar = () => {
           </ul>
         </div>
       </aside>
+
+      {/* Overlay for mobile view */}
+      <div
+        className={`fixed inset-0 bg-black opacity-50 z-30 ${
+          sidebarOpen ? "block" : "hidden"
+        }`}
+        onClick={toggleSidebar}
+      ></div>
     </div>
   );
 };
