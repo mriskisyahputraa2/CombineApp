@@ -22,6 +22,7 @@ const app = express();
 const sessionStore = SequelizeStore(session.Store);
 const store = new sessionStore({
   db: db,
+  logging: false,
 });
 
 // sinkronisasi database
@@ -53,6 +54,7 @@ app.use(
     cookie: {
       secure: "auto",
     },
+    logging: false,
   })
 );
 

@@ -2,8 +2,8 @@ import User from "../models/UserModel.js";
 import argon2, { hash } from "argon2";
 import jwt from "jsonwebtoken";
 
-// Get All User
-export const getUser = async (req, res) => {
+// Get all users (admin only)
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: ["uuid", "name", "email", "role"],
@@ -15,22 +15,37 @@ export const getUser = async (req, res) => {
   }
 };
 
-// Get user by id
-export const getUserById = async (req, res) => {
+// Get All User
+export const getUser = async (req, res) => {
   try {
-    const users = await User.findOne({
+    // Verifikasi apakah pengguna adalah admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
+    const users = await User.findAll({
       attributes: ["uuid", "name", "email", "role"],
     });
-    const accessToken = jwt.sign(
-      { userId: users.uuid, role: users.role },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "6h" } // token kadaluarsa dalam 6 jam
-    );
 
-    res.status(200).json({
-      users,
-      accessToken,
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+// // Get user by id
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      attributes: ["uuid", "name", "email", "role"],
+      where: {
+        uuid: req.params.id, // Menggunakan ID dari parameter
+      },
     });
+
+    if (!user) return res.status(404).json({ message: "User not found!" });
+
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
