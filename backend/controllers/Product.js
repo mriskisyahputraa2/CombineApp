@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Batas ukuran file 5MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // Batas ukuran file 2MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
@@ -26,6 +26,20 @@ const upload = multer({
     }
   },
 });
+
+// Middleware untuk menangani kesalahan ukuran file
+const handleFileSizeError = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res
+        .status(400)
+        .json({ message: "Images should not be larger than 2MB" });
+    }
+  } else if (err) {
+    return res.status(400).json({ message: err.message });
+  }
+  next();
+};
 
 // Function Get All Product
 export const getAllProduct = async (req, res) => {
@@ -110,6 +124,7 @@ export const getProductById = async (req, res) => {
 // Function Create Product with Image Upload
 export const createProduct = [
   upload.single("image"),
+  handleFileSizeError,
   async (req, res) => {
     const { name, brand, price } = req.body;
     const imageUrl = req.file
@@ -134,9 +149,10 @@ export const createProduct = [
   },
 ];
 
-// Function Update Product with Image Upload (Optional)
+// Function Update Product with Image Upload
 export const updateProduct = [
   upload.single("image"),
+  handleFileSizeError,
   async (req, res) => {
     try {
       const product = await Product.findOne({
@@ -150,29 +166,35 @@ export const updateProduct = [
 
       const { name, brand, price } = req.body;
 
+      // Update product with new data
+      const updateData = {
+        name,
+        brand,
+        price,
+      };
+
+      // Update image URL if a new image is uploaded
+      if (req.file) {
+        updateData.imageUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+      }
+
       if (req.role === "admin") {
-        await Product.update(
-          { name, price, brand },
-          {
-            where: {
-              id: product.id,
-            },
-          }
-        );
+        await Product.update(updateData, {
+          where: {
+            id: product.id,
+          },
+        });
       } else {
         if (req.userId !== product.userId)
           return res
             .status(403)
             .json({ message: "Access restricted, you are not an admin" });
 
-        await Product.update(
-          { name, price },
-          {
-            where: {
-              [Op.and]: [{ id: product.id }, { userId: req.userId }],
-            },
-          }
-        );
+        await Product.update(updateData, {
+          where: {
+            [Op.and]: [{ id: product.id }, { userId: req.userId }],
+          },
+        });
       }
       res.status(200).json({ message: "Product updated successfully" });
     } catch (error) {

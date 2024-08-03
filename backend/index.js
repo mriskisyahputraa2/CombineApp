@@ -72,6 +72,9 @@ app.use(express.json());
 // sinkronisasi database session
 // store.sync();
 
+// Menambahkan middleware untuk melayani file statis
+app.use("/uploads", express.static("uploads"));
+
 // middleware routes
 app.use(UserRoute);
 app.use(AuthRoute);
