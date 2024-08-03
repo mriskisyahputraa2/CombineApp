@@ -131,7 +131,7 @@ const ProductList = () => {
                             <img
                               src={product.imageUrl}
                               alt={product.name}
-                              className="w-full h-full object-cover"
+                              className="w-12 h-12 object-cover"
                               onError={(e) => (e.target.style.display = "none")} // Menyembunyikan gambar jika gagal dimuat
                             />
                           ) : (

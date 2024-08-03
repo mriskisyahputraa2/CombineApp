@@ -2,6 +2,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import Toast from "../ToastMessage/Toast";
+import "react-toastify/dist/ReactToastify.css";
 
 const FormAddProduct = () => {
   const [file, setFile] = useState(null);
@@ -30,13 +33,15 @@ const FormAddProduct = () => {
       navigate("/products");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        setMsg(error.response.data.message); // Menyimpan pesan error di state msg
+        toast.error(error.response.data.message); // Menampilkan pesan error menggunakan react-toastify
       }
     }
   };
 
   return (
     <div className="p-6">
+      <Toast />
       <h1 className="text-3xl font-bold mb-4 text-gray-800 ">Products</h1>
       <h2 className="text-xl font-semibold mb-4 text-gray-700">
         Add New Product
