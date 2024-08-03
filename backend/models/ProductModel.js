@@ -21,7 +21,7 @@ const Product = db.define(
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [3, 100],
+        len: [1, 100],
       },
     },
     brand: {
@@ -29,7 +29,7 @@ const Product = db.define(
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [3, 100],
+        len: [1, 100],
       },
     },
     price: {
@@ -37,6 +37,7 @@ const Product = db.define(
       allowNull: false,
       validate: {
         notEmpty: true,
+        min: 0, // Harga tidak boleh negatif
       },
     },
     userId: {

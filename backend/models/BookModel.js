@@ -20,7 +20,7 @@ const Book = db.define(
       allowNull: false,
       validate: {
         notEmpty: true,
-        len: [3, 100],
+        len: [1, 100],
       },
     },
     genre: {
@@ -43,6 +43,10 @@ const Book = db.define(
       validate: {
         notEmpty: true,
       },
+    },
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

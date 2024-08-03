@@ -7,7 +7,7 @@ import { Op } from "sequelize";
 // Konfigurasi multer untuk upload gambar
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, "uploads/product/");
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -128,7 +128,7 @@ export const createProduct = [
   async (req, res) => {
     const { name, brand, price } = req.body;
     const imageUrl = req.file
-      ? `http://localhost:8080/uploads/${req.file.filename}`
+      ? `http://localhost:8080/uploads/product/${req.file.filename}`
       : null;
 
     try {
@@ -175,7 +175,7 @@ export const updateProduct = [
 
       // Update image URL if a new image is uploaded
       if (req.file) {
-        updateData.imageUrl = `http://localhost:8080/uploads/${req.file.filename}`;
+        updateData.imageUrl = `http://localhost:8080/uploads/product/${req.file.filename}`;
       }
 
       if (req.role === "admin") {
