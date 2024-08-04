@@ -4,9 +4,13 @@ import { Link } from "react-router-dom";
 import { IoPencil, IoTrash } from "react-icons/io5";
 import Swal from "sweetalert2";
 import EmptyBook from "../EmptyBook/EmptyBook";
+import SearchBar from "../SearchBar/SearchBar";
+import { toast } from "react-toastify";
+import Toast from "../ToastMessage/Toast";
 
 const BookList = () => {
   const [books, setBooks] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
   const getAllBook = async () => {
     const response = await axios.get("http://localhost:8080/get-all-books");
@@ -16,6 +20,36 @@ const BookList = () => {
   useEffect(() => {
     getAllBook();
   }, []);
+
+  const onSearchBook = async ({ query }) => {
+    // jika pengguna menghapus text di pencarian, tampilkan lagi semua data book
+    if (query === "") {
+      getAllBook();
+    } else {
+      try {
+        const response = await axios.get(`http://localhost:8080/search`, {
+          params: { query, type: "book" },
+        });
+
+        if (response.data.items.length > 0) {
+          setBooks(response.data.items);
+          setIsSearch(true);
+        } else {
+          toast.error("No search books data");
+          getAllBook();
+          setIsSearch(false);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          toast.error("No search books data");
+          getAllBook();
+          setIsSearch(false);
+        } else {
+          toast.error("An error occurred while searching for books");
+        }
+      }
+    }
+  };
 
   // function create format deadline
   const formatDate = (dateString) => {
@@ -60,6 +94,7 @@ const BookList = () => {
 
   return (
     <div className="p-6">
+      <Toast />
       <h1 className="text-3xl font-bold mb-4 text-gray-800">Books</h1>
       <h2 className="text-xl font-semibold mb-4 text-gray-700">
         List of Books
@@ -70,121 +105,118 @@ const BookList = () => {
       >
         Add Books
       </Link>
+      <div className=" flex items-center justify-center px-4 bg-white rounded-full mb-6 mx-auto drop-shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <SearchBar onSearch={onSearchBook} type="book" />
+      </div>
       <div className="flex flex-col">
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                {books.length > 0 ? (
-                  <>
-                    <thead>
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          No
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          Image
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          Book Name
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          Genre
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          Deadline
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
-                        >
-                          Created By
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-end text-sm text-black font-bold uppercase"
-                        >
-                          Action
-                        </th>
+                <thead>
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      No
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      Image
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      Book Name
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      Genre
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      Deadline
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-start text-sm text-black font-bold uppercase"
+                    >
+                      Created By
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-end text-sm text-black font-bold uppercase"
+                    >
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
+                  {books.length > 0 ? (
+                    books.map((book, index) => (
+                      <tr key={book.uuid}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {book.imageUrl ? (
+                            <img
+                              src={book.imageUrl}
+                              alt={book.name}
+                              className="w-12 h-12 object-cover"
+                              onError={(e) => (e.target.style.display = "none")}
+                            />
+                          ) : (
+                            <span>No Image</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {book.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {book.genre}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          {checkDeadline(book.deadline)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                          {book.user.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
+                          <Link
+                            to={`/books/edit/${book.uuid}`}
+                            className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
+                            aria-label="Edit"
+                          >
+                            <IoPencil className="w-[15px] h-[15px]" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => deletebooks(book.uuid)}
+                            className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
+                            aria-label="Delete"
+                          >
+                            <IoTrash className="w-[15px] h-[15px]" />
+                          </button>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-neutral-700">
-                      {books.map((book, index) => (
-                        <tr key={book.uuid}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                            {index + 1}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                            {book.imageUrl ? (
-                              <img
-                                src={book.imageUrl}
-                                alt={book.name}
-                                className="w-12 h-12 object-cover"
-                                onError={(e) =>
-                                  (e.target.style.display = "none")
-                                }
-                              />
-                            ) : (
-                              <span>No Image</span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                            {book.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                            {book.genre}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            {checkDeadline(book.deadline)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                            {book.user.name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium">
-                            <Link
-                              to={`/books/edit/${book.uuid}`}
-                              className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-blue-600 hover:text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 rounded-md"
-                              aria-label="Edit"
-                            >
-                              <IoPencil className="w-[15px] h-[15px]" />
-                            </Link>
-                            <button
-                              type="button"
-                              onClick={() => deletebooks(book.uuid)}
-                              className="inline-flex items-center mb-2 p-2 bg-transparent shadow-md text-red-600 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition duration-200 rounded-md"
-                              aria-label="Delete"
-                            >
-                              <IoTrash className="w-[15px] h-[15px]" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </>
-                ) : (
-                  <tbody>
+                    ))
+                  ) : (
                     <tr>
-                      <td>
+                      <td colSpan="7" className="text-center py-6">
                         <EmptyBook />
                       </td>
                     </tr>
-                  </tbody>
-                )}
+                  )}
+                </tbody>
               </table>
             </div>
           </div>

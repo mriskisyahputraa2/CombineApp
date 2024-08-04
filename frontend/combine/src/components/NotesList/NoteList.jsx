@@ -34,38 +34,37 @@ const NoteList = () => {
   };
 
   // Menghandle pencarian catatan
-  const onSearchNote = async (query) => {
-    try {
-      const response = await axios.get("http://localhost:8080/search-notes", {
-        params: query,
-      });
+  const onSearchNote = async ({ query }) => {
+    if (query === "") {
+      getAllNote();
+    } else {
+      try {
+        const response = await axios.get("http://localhost:8080/search", {
+          params: { query, type: "note" },
+        });
 
-      if (response.data && response.data.notes) {
-        if (response.data.notes.length > 0) {
-          setNotes(response.data.notes);
-          setIsSearch(true);
-        } else {
-          toast.error("No notes found matching the search query");
+        if (response.data && response.data.items) {
+          if (response.data.items.lengt > 0) {
+            setNotes(response.data.items);
+            setIsSearch(true);
+          } else {
+            toast.error("No search notes data");
+            // Memuat ulang semua catatan jika tidak ada hasil
+            getAllNote();
+            setIsSearch(false);
+          }
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          toast.error("No search notes data");
           // Memuat ulang semua catatan jika tidak ada hasil
           getAllNote();
           setIsSearch(false);
+        } else {
+          toast.error("An error occurred while searching for notes");
         }
       }
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        toast.error("No notes found matching the search query");
-        // Memuat ulang semua catatan jika tidak ada hasil
-        getAllNote();
-        setIsSearch(false);
-      } else {
-        toast.error("An error occurred while searching for notes");
-      }
     }
-  };
-
-  const handleClearSearch = () => {
-    setIsSearch(false);
-    getAllNote();
   };
 
   useEffect(() => {
@@ -129,10 +128,7 @@ const NoteList = () => {
         <>
           {/* Start SearchBar */}
           <div className="flex items-center justify-center px-4 bg-white rounded-full mb-6 mx-auto drop-shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
-            <SearchBar
-              onSearchNote={onSearchNote}
-              handleClearSearch={handleClearSearch}
-            />
+            <SearchBar onSearch={onSearchNote} type="note" />
           </div>
           {/* End SearchBar */}
 

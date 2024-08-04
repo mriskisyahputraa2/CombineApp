@@ -4,9 +4,14 @@ import { IoPencil, IoTrash } from "react-icons/io5";
 import axios from "axios";
 import Swal from "sweetalert2";
 import EmptyProduct from "../EmptyProduct/EmptyProduct";
+import SearchBar from "../SearchBar/SearchBar";
+
+import { toast } from "react-toastify";
+import Toast from "../ToastMessage/Toast";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
   useEffect(() => {
     getAllProduct();
@@ -17,10 +22,39 @@ const ProductList = () => {
       const response = await axios.get(
         "http://localhost:8080/get-all-products"
       );
-      // console.log(response.data); // Log data untuk memeriksa formatnya
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+
+  const onSearchProduct = async ({ query }) => {
+    // jika pengguna menghapus text di pencarian, tampilkan lagi semua data product
+    if (query === "") {
+      getAllProduct();
+    } else {
+      try {
+        const response = await axios.get(`http://localhost:8080/search`, {
+          params: { query, type: "product" },
+        });
+
+        if (response.data.items.length > 0) {
+          setProducts(response.data.items);
+          setIsSearch(true);
+        } else {
+          toast.error("No search product data");
+          getAllProduct();
+          setIsSearch(false);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          toast.error("No search product data");
+          getAllProduct();
+          setIsSearch(false);
+        } else {
+          toast.error("An error occurred while searching for products");
+        }
+      }
     }
   };
 
@@ -40,7 +74,7 @@ const ProductList = () => {
             `http://localhost:8080/delete-products/${productId}`
           );
           Swal.fire("Deleted!", "Your product has been deleted.", "success");
-          getAllProduct(); // Refresh product list after deletion
+          getAllProduct();
         } catch (error) {
           console.error("Error deleting product:", error);
           Swal.fire("Error!", "Something went wrong.", "error");
@@ -58,16 +92,22 @@ const ProductList = () => {
 
   return (
     <div className="p-6">
+      <Toast />
       <h1 className="text-3xl font-bold mb-4 text-gray-800">Products</h1>
       <h2 className="text-xl font-semibold mb-4 text-gray-700">
         List of Products
       </h2>
-      <Link
-        to={"/products/add"}
-        className="inline-block mb-6 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
-      >
-        Add Products
-      </Link>
+      <div className="flex justify-between items-center mb-6">
+        <Link
+          to={"/products/add"}
+          className="inline-block px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
+        >
+          Add Products
+        </Link>
+      </div>
+      <div className=" flex items-center justify-center px-4 bg-white rounded-full mb-6 mx-auto drop-shadow-md w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <SearchBar onSearch={onSearchProduct} type="product" />
+      </div>
       <div className="flex flex-col">
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">

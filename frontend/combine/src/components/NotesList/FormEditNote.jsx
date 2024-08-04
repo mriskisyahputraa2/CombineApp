@@ -95,6 +95,9 @@ const FormEditNote = () => {
               onChange={(e) => setContent(e.target.value)}
               required
             />
+            <span className="text-gray-500 text-sm italic">
+              Content must not exceed 100 characters
+            </span>
           </div>
 
           {/* tags */}
