@@ -1,63 +1,90 @@
 import Note from "../models/NoteModel.js";
-import { Op } from "sequelize"; // import operator
-import User from "../models/UserModel.js"; // import model user
+import Product from "../models/ProductModel.js";
+import Book from "../models/BookModel.js";
+import { Op } from "sequelize";
+import User from "../models/UserModel.js";
 
-export const searchNote = async (req, res) => {
-  // Validasi, mengecek apakah req user dan uuid ada atau tidak
+export const searchItems = async (req, res) => {
   if (!req.user || !req.user.uuid) {
     return res.status(401).json({
-      message: "Unauthorized: User information not available", // tampilkan pesan
+      message: "Unauthorized: User information not available",
     });
   }
 
-  // Mendapatkan query yang dimasukkan pengguna
-  const { query } = req.query;
+  const { query, type } = req.query;
 
-  // Validasi query jika tidak ada
-  if (!query) {
+  if (!query || !type) {
     return res.status(400).json({
-      message: "Search query is required",
+      message: "Search query and type are required",
     });
   }
 
   try {
-    // Mencari data user berdasarkan userId
     const user = await User.findOne({ where: { id: req.user.id } });
 
-    let searchCriteria = {
-      [Op.or]: [
-        { title: { [Op.like]: `%${query}%` } },
-        { content: { [Op.like]: `%${query}%` } },
-      ],
-    };
+    let searchCriteria;
+    let matchingItems;
 
-    // Jika pengguna adalah admin, mereka bisa melihat semua catatan
-    if (user.role !== "admin") {
-      searchCriteria.userId = req.user.id; // Hanya catatan pengguna tersebut
+    switch (type) {
+      case "note":
+        searchCriteria = {
+          [Op.or]: [
+            { title: { [Op.like]: `%${query}%` } },
+            { content: { [Op.like]: `%${query}%` } },
+            { "$user.name$": { [Op.like]: `%${query}%` } },
+          ],
+        };
+        if (user.role !== "admin") {
+          searchCriteria.userId = req.user.id;
+        }
+        matchingItems = await Note.findAll({
+          where: searchCriteria,
+          include: [{ model: User, attribute: ["name"] }],
+        });
+        break;
+      case "product":
+        searchCriteria = {
+          [Op.or]: [
+            { name: { [Op.like]: `%${query}%` } },
+            { brand: { [Op.like]: `%${query}%` } },
+            { "$user.name$": { [Op.like]: `%${query}%` } },
+          ],
+        };
+        matchingItems = await Product.findAll({
+          where: searchCriteria,
+          include: [{ model: User, attribute: ["name"] }],
+        });
+        break;
+      case "book":
+        searchCriteria = {
+          [Op.or]: [
+            { name: { [Op.like]: `%${query}%` } },
+            { genre: { [Op.like]: `%${query}%` } },
+            { "$user.name$": { [Op.like]: `%${query}%` } },
+          ],
+        };
+        matchingItems = await Book.findAll({
+          where: searchCriteria,
+          include: [{ model: User, attribute: ["name"] }],
+        });
+        break;
+      default:
+        return res.status(400).json({
+          message: "Invalid search type",
+        });
     }
 
-    // Mencari data note yang cocok dengan query
-    const matchingNotes = await Note.findAll({
-      where: searchCriteria,
-      include: [
-        {
-          model: User,
-          attribute: ["name"],
-        },
-      ],
-    });
-
-    // Jika tidak ditemukan catatan yang cocok
-    if (matchingNotes.length === 0) {
+    if (matchingItems.length === 0) {
       return res.status(404).json({
-        message: "No notes found matching the search query",
+        message: `No ${type}s found matching the search query`,
       });
     }
 
-    // Jika cocok tampilkan datanya
     return res.json({
-      notes: matchingNotes,
-      message: "Notes matching the search query retrieved successfully",
+      items: matchingItems,
+      message: `${
+        type.charAt(0).toUpperCase() + type.slice(1)
+      }s matching the search query retrieved successfully`,
     });
   } catch (error) {
     return res.status(500).json({

@@ -72,7 +72,7 @@ app.use(express.json());
 // sinkronisasi database session
 // store.sync();
 
-// Menambahkan middleware untuk melayani file statis
+// Menambahkan middleware untuk melayani file statis uploads img product & book
 app.use("/uploads", express.static("uploads"));
 
 // middleware routes
