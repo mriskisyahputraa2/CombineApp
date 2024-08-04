@@ -105,6 +105,9 @@ const WeatherApp = () => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center px-4 lg:px-0">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6 drop-shadow-lg">
+        Weather
+      </h1>
       <form
         className="h-14 bg-gradient-to-r from-violet-800 to-sky-900  w-full max-w-[320px] rounded-full backdrop:blur-[12px] mb-6"
         onSubmit={handleSubmit}

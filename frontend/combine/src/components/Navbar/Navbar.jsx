@@ -12,6 +12,7 @@ import {
   IoDocumentText,
 } from "react-icons/io5";
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
+import Logo from "../../assets/images/logo.png";
 
 const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,7 +39,11 @@ const Navbar = () => {
                 to="/dashboard"
                 className="text-xl font-bold uppercase text-gray-900"
               >
-                BELUM
+                <img
+                  className="w-[70px] h-12  object-cover object-center"
+                  src={Logo}
+                  alt="Logo"
+                />
               </NavLink>
             </div>
 
