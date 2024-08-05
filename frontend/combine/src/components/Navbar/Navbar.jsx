@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logOut, reset } from "../../features/authSlice";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser } from "react-icons/fa";
 import {
   IoHome,
   IoPricetag,
@@ -75,6 +75,9 @@ const Navbar = () => {
       >
         <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
           <ul className="space-y-2 font-medium mt-16">
+            <div className="mt-4 flex flex-col flex-end">
+              <ProfileInfo />
+            </div>
             <li>
               <NavLink
                 to="/dashboard"
@@ -85,6 +88,18 @@ const Navbar = () => {
                   aria-hidden="true"
                 />
                 <span className="ms-3">Dashboard</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/users"
+                className="flex items-center p-2 dark:text-white rounded-lg hover:bg-gray-100 transition-colors dark:hover:bg-gray-700"
+              >
+                <FaUser
+                  className="w-5 h-5 text-gray-500 transition duration-75"
+                  aria-hidden="true"
+                />
+                <span className="ms-3">User</span>
               </NavLink>
             </li>
             <li>
@@ -135,6 +150,7 @@ const Navbar = () => {
                 <span className="ms-3">Weather</span>
               </NavLink>
             </li>
+
             <li>
               <button
                 type="button"

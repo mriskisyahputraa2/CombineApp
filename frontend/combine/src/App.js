@@ -14,6 +14,8 @@ import AddNotes from "./pages/Notes/AddNotes";
 import EditNotes from "./pages/Notes/EditNotes";
 import Weathers from "./pages/Weathers/Weathers";
 import ForgotPassword from "./pages/SignUp/ForgotPassword";
+import Settings from "./pages/Settings/Settings";
+import Users from "./pages/Users/Users";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/dashboard" exact element={<Dashboard />} />
           <Route path="/signup" exact element={<SignUp />} />
           <Route path="/forgot-password" exact element={<ForgotPassword />} />
+          <Route path="/setting-account" exact element={<Settings />} />
+          <Route path="/users" exact element={<Users />} />
           <Route path="/products" exact element={<Products />} />
           <Route path="/products/add" exact element={<AddProduct />} />
           <Route path="/products/edit/:id" exact element={<EditProduct />} />

@@ -72,7 +72,7 @@ const ProfileInfo = () => {
               {user.role === "admin" ? "Admin" : user.name}
             </h3>
             <Link
-              to={"/settings"}
+              to={"/setting-account"}
               className="mt-2 w-full flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 focus:outline-none"
             >
               <IoSettings className="mr-2" />
