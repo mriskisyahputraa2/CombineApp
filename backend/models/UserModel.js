@@ -50,6 +50,15 @@ const User = db.define(
         notEmpty: true, // Memastikan tidak kosong
       },
     },
+
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetPasswordExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,

@@ -72,10 +72,8 @@ app.use(express.json());
 // sinkronisasi database session
 // store.sync();
 
-// Menambahkan middleware untuk melayani file statis uploads img product & book
-app.use("/uploads", express.static("uploads"));
-
 // middleware routes
+app.use("/uploads", express.static("uploads")); // Menambahkan middleware untuk melayani file statis uploads img product & book
 app.use(UserRoute);
 app.use(AuthRoute);
 app.use(ProductRoute);
@@ -83,7 +81,7 @@ app.use(BookRoute);
 app.use(NoteRoute);
 app.use(WeatherRoute);
 app.use(SearchRoute);
-app.use(createAdmin);
+// app.use(createAdmin);
 
 app.listen(process.env.APP_PORT, () => {
   console.log("Server up and running");

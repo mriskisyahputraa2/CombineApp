@@ -19,10 +19,16 @@ const upload = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // Batas ukuran file 2MB
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Invalid file type, only images are allowed!"), false);
+      cb(
+        new Error(
+          "Sorry, you can only enter JPG, JPEG, and PNG format images. "
+        ),
+        false
+      );
     }
   },
 });
