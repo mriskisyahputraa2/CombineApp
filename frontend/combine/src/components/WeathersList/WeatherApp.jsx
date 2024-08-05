@@ -23,7 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const WeatherApp = () => {
   const [data, setData] = useState(null);
-  const [location, setLocation] = useState("Aceh");
+  const [location, setLocation] = useState("Lhokseumawe");
   const [inputValue, setInputValue] = useState("");
   const [loading, setLoading] = useState(false);
 

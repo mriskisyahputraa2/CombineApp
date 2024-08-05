@@ -66,7 +66,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Responsive navbar sidebar */}
+      {/* start sidebar responsive ketika layar mobile*/}
       <aside
         className={`fixed top-0 left-0 z-40 w-64 h-screen bg-gray-50 border-r border-gray-200 transition-transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -151,6 +151,7 @@ const Navbar = () => {
           </ul>
         </div>
       </aside>
+      {/* end sidebar responsive ketika layar mobile*/}
 
       <div className="md:hidden">
         <div
