@@ -14,6 +14,10 @@ const NoteList = () => {
   const [notes, setNotes] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
 
+  useEffect(() => {
+    getAllNote();
+  }, []);
+
   // Mendapatkan semua catatan
   const getAllNote = async () => {
     try {
@@ -39,37 +43,29 @@ const NoteList = () => {
       getAllNote();
     } else {
       try {
-        const response = await axios.get("http://localhost:8080/search", {
+        const response = await axios.get(`http://localhost:8080/search`, {
           params: { query, type: "note" },
         });
 
-        if (response.data && response.data.items) {
-          if (response.data.items.lengt > 0) {
-            setNotes(response.data.items);
-            setIsSearch(true);
-          } else {
-            toast.error("No search notes data");
-            // Memuat ulang semua catatan jika tidak ada hasil
-            getAllNote();
-            setIsSearch(false);
-          }
+        if (response.data.items.length > 0) {
+          setNotes(response.data.items);
+          setIsSearch(true);
+        } else {
+          toast.error("No search product data");
+          getAllNote();
+          setIsSearch(false);
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
-          toast.error("No search notes data");
-          // Memuat ulang semua catatan jika tidak ada hasil
+          toast.error("No search product data");
           getAllNote();
           setIsSearch(false);
         } else {
-          toast.error("An error occurred while searching for notes");
+          toast.error("An error occurred while searching for products");
         }
       }
     }
   };
-
-  useEffect(() => {
-    getAllNote();
-  }, []);
 
   // Menghandle penghapusan catatan
   const deleteNotes = async (notesId) => {

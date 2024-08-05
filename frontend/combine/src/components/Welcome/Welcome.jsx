@@ -76,52 +76,11 @@ const Welcome = () => {
     }
   };
 
-  const getUserProducts = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/get-user-products/${user.id}`
-      );
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching user products:", error);
-    }
-  };
-
-  const getUserBooks = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/get-user-books/${user.id}`
-      );
-      setBooks(response.data);
-    } catch (error) {
-      console.error("Error fetching user books:", error);
-    }
-  };
-
-  const getUserNotes = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/get-user-notes/${user.id}`
-      );
-      setNotes(response.data);
-    } catch (error) {
-      console.error("Error fetching user notes:", error);
-    }
-  };
-
   useEffect(() => {
-    if (user) {
-      if (user.role === "admin") {
-        getAllProducts();
-        getAllBooks();
-        getAllNotes();
-      } else {
-        getUserProducts();
-        getUserBooks();
-        getUserNotes();
-      }
-    }
-  }, [user]);
+    getAllProducts();
+    getAllBooks();
+    getAllNotes();
+  }, []);
 
   const generateCalendar = (year, month) => {
     const firstDayOfMonth = new Date(year, month, 1);
@@ -230,6 +189,7 @@ const Welcome = () => {
               onClick={handlePrevMonth}
               className="text-sm font-medium text-gray-500 hover:text-gray-900"
             >
+              {/* img panah kiri kanan */}
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
