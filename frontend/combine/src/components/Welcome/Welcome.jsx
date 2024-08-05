@@ -1,6 +1,25 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Welcome = () => {
   const [products, setProducts] = useState([]);
@@ -165,6 +184,20 @@ const Welcome = () => {
   useEffect(() => {
     generateCalendar(currentYear, currentMonth);
   }, [currentYear, currentMonth]);
+
+  const chartData = {
+    labels: ["Products", "Books", "Notes"],
+    datasets: [
+      {
+        label: "Count",
+        data: [products.length, books.length, notes.length],
+        backgroundColor: ["#4caf50", "#2196f3", "#ff9800"],
+        borderColor: ["#388e3c", "#1976d2", "#f57c00"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold text-gray-900 mb-4">Dashboard</h1>
@@ -187,57 +220,87 @@ const Welcome = () => {
           <p className="text-2xl text-gray-700">{notes.length}</p>
         </div>
       </div>
-      {/* start calender */}
-      <div className="mt-4">
-        <div className="lg:w-7/12 md:w-9/12 sm:w-10/12">
-          <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-3 bg-gray-700">
-              <button onClick={handlePrevMonth} className="text-white">
-                Previous
-              </button>
-              <h2 className="text-white">
-                {monthNames[currentMonth]} {currentYear}
-              </h2>
-              <button onClick={handleNextMonth} className="text-white">
-                Next
-              </button>
-            </div>
-            <div className="grid grid-cols-7 gap-2 p-4">
-              {generateCalendar(currentYear, currentMonth)}
-            </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Kalender */}
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-900">Calendar</h3>
+          <div className="flex justify-between pb-4 mb-4 border-b border-gray-200">
+            <button
+              onClick={handlePrevMonth}
+              className="text-sm font-medium text-gray-500 hover:text-gray-900"
+            >
+              <svg
+                className="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="m8 10-4-4 4-4"
+                />
+              </svg>
+            </button>
+            <p className="text-sm font-normal text-gray-500">
+              {monthNames[currentMonth]} {currentYear}
+            </p>
+            <button
+              onClick={handleNextMonth}
+              className="text-sm font-medium text-gray-500 hover:text-gray-900"
+            >
+              <svg
+                className="w-4 h-4"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="m6 4 4 4-4 4"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="grid grid-cols-7 gap-2">
+            {generateCalendar(currentYear, currentMonth)}
           </div>
         </div>
-        {isModalOpen && (
-          <div className="modal fixed inset-0 flex items-center justify-center z-50">
-            <div
-              className="modal-overlay absolute inset-0 bg-black opacity-50"
-              onClick={handleCloseModal}
-            ></div>
-            <div className="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-              <div className="modal-content py-4 text-left px-6">
-                <div className="flex justify-between items-center pb-3">
-                  <p className="text-2xl font-bold">Selected Date</p>
-                  <button
-                    onClick={handleCloseModal}
-                    className="modal-close px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="text-xl font-semibold">
-                  {selectedDate?.toLocaleDateString(undefined, {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
+        {/* Chart */}
+        <div className="p-4 bg-white shadow rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-900">Statistics</h3>
+          <Bar data={chartData} />
+        </div>
       </div>
-      {/* end calender */}
+
+      {/* Modal Code */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              Selected Date
+            </h3>
+            <p className="text-gray-700">
+              {selectedDate ? selectedDate.toDateString() : "No date selected"}
+            </p>
+            <button
+              onClick={handleCloseModal}
+              className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
