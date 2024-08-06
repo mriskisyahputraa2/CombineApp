@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import Layout from "../Layout/Layout";
-import SettingList from "../../components/SettingList/SettingList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { getMe } from "../../features/authSlice";
-
-const Settings = () => {
+import Layout from "../Layout/Layout";
+import FromEditUser from "../../components/UserList/FromEditUser";
+const EditUser = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isError } = useSelector((state) => state.auth);
@@ -20,12 +19,12 @@ const Settings = () => {
     }
   }, [navigate, isError]);
   return (
-    <div>
+    <>
       <Layout>
-        <SettingList />
+        <FromEditUser />
       </Layout>
-    </div>
+    </>
   );
 };
 
-export default Settings;
+export default EditUser;

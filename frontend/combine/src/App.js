@@ -16,6 +16,8 @@ import Weathers from "./pages/Weathers/Weathers";
 import ForgotPassword from "./pages/SignUp/ForgotPassword";
 import Settings from "./pages/Settings/Settings";
 import Users from "./pages/Users/Users";
+import AddUsers from "./pages/Users/AddUsers";
+import EditUser from "./pages/Users/EditUser";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/forgot-password" exact element={<ForgotPassword />} />
           <Route path="/setting-account" exact element={<Settings />} />
           <Route path="/users" exact element={<Users />} />
+          <Route path="/users/add" exact element={<AddUsers />} />
+          <Route path="/users/edit/:id" exact element={<EditUser />} />
           <Route path="/products" exact element={<Products />} />
           <Route path="/products/add" exact element={<AddProduct />} />
           <Route path="/products/edit/:id" exact element={<EditProduct />} />

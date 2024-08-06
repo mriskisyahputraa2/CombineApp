@@ -2,40 +2,35 @@ import React, { useEffect, useState } from "react";
 import adminImg from "../../assets/images/admin.png";
 import userImg from "../../assets/images/user.jpg";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SettingList = () => {
-  const [user, setUser] = useState([]); // State untuk menyimpan informasi pengguna
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  //   const { user } = useSelector((state) => state.auth);
+  const [user, setUser] = useState(null); // State untuk menyimpan informasi pengguna
 
-  // mendapatkan role pengguna
   useEffect(() => {
-    const getUserProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(response.data);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-
     getUserProfile();
   }, []);
+
+  const getUserProfile = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/me");
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      Swal.fire("Error!", "Unable to fetch user profile.", "error");
+    }
+  };
+
+  if (!user) {
+    return <div>Loading...</div>; // Menampilkan pesan loading saat data belum diambil
+  }
 
   const profileImg = user.role === "admin" ? adminImg : userImg;
 
   return (
     <div className="p-6">
-      <div className="bg-white shadow-md rounded-lg max-w-lg mx-auto p-6 sm:max-w-xl md:max-w-2xl lg:max-w-4xl">
+      <div className="bg-white shadow-md rounded-lg max-w-lg mx-auto p-6 sm:max-w-sm md:max-w-xl lg:max-w-2xl">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800 text-center">
           Account Settings
         </h1>
@@ -64,18 +59,6 @@ const SettingList = () => {
             className="bg-blue-500 text-center text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
           >
             Change Password
-          </Link>
-          <Link
-            to={"/update-profile"}
-            className="bg-green-500 text-white text-center py-2 px-4 rounded-lg hover:bg-green-600 transition"
-          >
-            Update Profile
-          </Link>
-          <Link
-            to={`/delete-account/${user.uuid}`}
-            className="bg-red-500 text-center text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
-          >
-            Delete Account
           </Link>
         </div>
       </div>
