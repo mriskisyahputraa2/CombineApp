@@ -8,6 +8,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -83,6 +84,22 @@ const SignUp = () => {
                 placeholder="**********"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="confPassword"
+              >
+                Confirm Password
+              </label>
+              <input
+                type="confPassword"
+                id="password"
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="**********"
+                value={confPassword}
+                onChange={(e) => setConfPassword(e.target.value)}
               />
             </div>
             <div className="flex items-center justify-between">
