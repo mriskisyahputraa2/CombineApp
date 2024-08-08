@@ -18,9 +18,16 @@ const ForgotPassword = () => {
       toast.error("Email wajib diisi");
     } else {
       try {
-        await axios.put("http://localhost:8080/forgot-password", { email });
-        setEmail("");
-        toast.success("Silahkan cek email anda");
+        const res = await axios.put("http://localhost:8080/forgot-password", {
+          email,
+        });
+
+        if (res.data.status) {
+          setEmail("");
+          toast.success("Silahkan cek email anda");
+        } else {
+          toast.error(res.data.message);
+        }
       } catch (error) {
         toast.error("Terjadi kesalahan saat mereset password");
         console.error("There was an error resetting the password!", error);
@@ -47,7 +54,7 @@ const ForgotPassword = () => {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               id="email"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Email"

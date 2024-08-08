@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom"; // Import useParams
+import { toast } from "react-toastify";
 import Toast from "../../components/ToastMessage/Toast";
+import axios from "axios";
 
 const ResetPassword = () => {
+  const { token } = useParams(); // Gunakan useParams untuk mendapatkan token
+  const navigate = useNavigate("");
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
@@ -41,16 +45,35 @@ const ResetPassword = () => {
     return isValid;
   };
 
-  const resetPassword = (e) => {
+  const resetPassword = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Lakukan proses reset password
-      console.log("Password reset successful!");
-      // Reset form fields
-      setFormData({
-        password: "",
-        confirmPassword: "",
-      });
+      try {
+        const data = {
+          token: token, // Gunakan token dari useParams
+          password: formData.password,
+        };
+
+        const res = await axios.put(
+          "http://localhost:8080/reset-password",
+          data
+        );
+
+        if (res.data.status) {
+          toast.success(res.data.message);
+          setFormData({
+            password: "",
+            confirmPassword: "",
+          });
+          setTimeout(() => {
+            navigate("/");
+          }, 3000); // Jeda 3 detik sebelum mengarahkan pengguna ke halaman login
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      }
     }
   };
 

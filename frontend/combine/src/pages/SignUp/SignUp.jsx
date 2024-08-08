@@ -18,7 +18,7 @@ const SignUp = () => {
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    dispatch(registerUser({ name, email, password }));
+    dispatch(registerUser({ name, email, password, confPassword }));
   };
 
   useEffect(() => {
@@ -94,8 +94,8 @@ const SignUp = () => {
                 Confirm Password
               </label>
               <input
-                type="confPassword"
-                id="password"
+                type="password"
+                id="confPassword"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="**********"
                 value={confPassword}

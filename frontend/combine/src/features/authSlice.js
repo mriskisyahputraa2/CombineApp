@@ -18,7 +18,7 @@ export const registerUser = createAsyncThunk(
         name: user.name,
         email: user.email,
         password: user.password,
-        // role: user.role,
+        confPassword: user.confPassword,
       });
       return response.data;
     } catch (error) {
