@@ -1,100 +1,10 @@
 import User from "../models/UserModel.js";
-import nodemailer from "nodemailer";
+import { KirimEmail } from "../helpers/index.js";
 import argon2 from "argon2";
+
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
-
-// Configurasi nodemailer
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: process.env.GMAIL_USER, // masukkan email Anda
-    pass: process.env.GMAIL_PASS, // masukkan password email Anda
-  },
-});
-
-// Forgot Password
-export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-
-  try {
-    const user = await User.findOne({ where: { email } });
-
-    if (!user) {
-      return res.status(404).json({ message: "Email not found!" });
-    }
-
-    // Membuat token reset password
-    const resetToken = jwt.sign(
-      { userId: user.uuid },
-      process.env.RESET_PASSWORD_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 jam
-
-    await user.save();
-
-    // Mengirim email
-    const mailOptions = {
-      to: user.email,
-      from: process.env.GMAIL_USER,
-      subject: "Password Reset",
-      text: `
-        You are receiving this because you (or someone else) have requested the reset of the password for your account.
-        Please click on the following link, or paste this into your browser to complete the process:
-        http://${req.headers.host}/reset/${resetToken}
-        If you did not request this, please ignore this email and your password will remain unchanged.
-      `,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: "Password reset email sent!" });
-  } catch (error) {
-    console.error("Error in forgotPassword:", error); // Tambahkan logging ini
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-// Reset Password
-export const resetPassword = async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
-
-  try {
-    const decoded = jwt.verify(token, process.env.RESET_PASSWORD_SECRET);
-
-    const user = await User.findOne({
-      where: {
-        uuid: decoded.userId,
-        resetPasswordToken: token,
-        resetPasswordExpires: { [Op.gt]: Date.now() },
-      },
-    });
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Password reset token is invalid or has expired." });
-    }
-
-    const hashedPassword = await argon2.hash(password);
-
-    user.password = hashedPassword;
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
-
-    await user.save();
-
-    res.status(200).json({ message: "Password has been reset!" });
-  } catch (error) {
-    console.error("Error in resetPassword:", error); // Tambahkan logging ini
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
 
 // Login a user
 export const Login = async (req, res) => {
@@ -156,7 +66,7 @@ export const Login = async (req, res) => {
 
 // Get me
 export const Me = async (req, res) => {
-  if (!req.session.userId) {
+  if (!req.session || !req.session.userId) {
     return res.status(401).json({ message: "Please login to your account!" });
   }
   const user = await User.findOne({
@@ -176,4 +86,83 @@ export const Logout = async (req, res) => {
     if (err) return res.status(400).json({ message: "Unable to log out" });
     res.status(200).json({ message: "You are logged out" });
   });
+};
+
+// Forgot Password
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  // Perbaikan findOne dengan menggunakan where
+  const user = await User.findOne({ where: { email: email } });
+
+  if (!user) {
+    return res.status(200).json({
+      status: false,
+      message: "Email tidak tersedia",
+    });
+  }
+
+  const token = jwt.sign(
+    { userId: user.uuid },
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: "1h" } // Token kadaluarsa dalam 1 jam
+  );
+
+  await user.update({ resetPasswordLink: token });
+
+  const templateEmail = {
+    from: "Rizki Programmer",
+    to: email,
+    subject: "Link Reset Password",
+    html: `<p>Silahkan klik link dibawah untuk reset password anda</p> <p>${process.env.CLIENT_URL}/reset-password/${token}</p>`,
+  };
+
+  console.log(templateEmail);
+
+  try {
+    await KirimEmail(templateEmail);
+    return res
+      .status(200)
+      .json({ status: true, message: "Link reset password berhasil terkirim" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Kesalahan saat mengirim email reset password",
+    });
+  }
+};
+
+// reset password
+export const resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+  // console.log("token", token);
+  // console.log("password", password);
+
+  try {
+    const user = await User.findOne({ where: { resetPasswordLink: token } });
+
+    if (!user) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid token or user not found.",
+      });
+    }
+
+    const hashPassword = await argon2.hash(password, 12);
+    user.password = hashPassword;
+    user.resetPasswordLink = null; // Reset the resetPasswordLink after successful reset
+    await user.save();
+
+    return res.status(201).json({
+      status: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error.",
+    });
+  }
 };

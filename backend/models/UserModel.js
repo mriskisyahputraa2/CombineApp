@@ -41,6 +41,13 @@ const User = db.define(
         notEmpty: true,
       },
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
 
     role: {
       type: DataTypes.STRING,
@@ -51,12 +58,8 @@ const User = db.define(
       },
     },
 
-    resetPasswordToken: {
+    resetPasswordLink: {
       type: DataTypes.STRING,
-      allowNull: true,
-    },
-    resetPasswordExpires: {
-      type: DataTypes.DATE,
       allowNull: true,
     },
   },

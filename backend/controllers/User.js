@@ -52,6 +52,47 @@ export const getUserById = async (req, res) => {
 };
 
 // create a user
+// export const createUser = async (req, res) => {
+//   const { name, email, password, confPassword } = req.body;
+
+//   const errors = [];
+//   if (!name) errors.push("Name is required");
+//   if (!email) errors.push("Email is required");
+//   if (!password) errors.push("Password is required");
+//   if (password !== confPassword) {
+//     return res.status(400).json({
+//       message: "Password and Confirmation Password does not match",
+//     });
+//   }
+
+//   if (errors.length > 0) {
+//     return res.status(400).json({ message: errors.join(", ") });
+//   }
+
+//   try {
+//     const isUser = await User.findOne({ where: { email } });
+
+//     if (isUser) {
+//       return res.status(400).json({
+//         message: "User already exists",
+//       });
+//     }
+
+//     const hashedPassword = await argon2.hash(password);
+//     const user = new User({ name, email, password: hashedPassword });
+
+//     await user.save();
+
+//     return res.status(200).json({
+//       user,
+//       message: "Register Successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
 export const createUser = async (req, res) => {
   const { name, email, password, confPassword } = req.body; // menghilangkan role
 
@@ -173,12 +214,6 @@ export const deleteUser = async (req, res) => {
     return res.status(404).json({ message: "User not found" }); // Gunakan status 404 untuk pengguna tidak ditemukan
   }
 
-  // Pastikan pengguna memiliki hak akses yang tepat jika diperlukan
-  // Misalnya, periksa apakah pengguna yang saat ini logged in adalah admin
-  // if (req.user.role !== 'admin') {
-  //   return res.status(403).json({ message: "Forbidden" });
-  // }
-
   try {
     await User.destroy({
       where: {
@@ -190,26 +225,3 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message }); // Gunakan status 500 untuk kesalahan server
   }
 };
-
-// export const deleteUser = async (req, res) => {
-//   const user = await User.findOne({
-//     where: {
-//       uuid: req.params.id,
-//     },
-//   });
-
-//   if (!user) {
-//     return res.status(400).json({ message: "User not found" });
-//   }
-
-//   try {
-//     await User.destroy({
-//       where: {
-//         id: user.id,
-//       },
-//     });
-//     res.status(200).json({ message: "User deleted successfully" });
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
