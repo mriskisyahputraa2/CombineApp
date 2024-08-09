@@ -41,13 +41,6 @@ const User = db.define(
         notEmpty: true,
       },
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
 
     role: {
       type: DataTypes.STRING,
