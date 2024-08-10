@@ -27,17 +27,21 @@ export const createAdmin = async () => {
 
 // Function verifyUser jika menggunakan token JWT
 export const verifyUser = async (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized access!" });
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Please login to your account!" });
   }
   try {
     const user = await User.findOne({
-      where: { uuid: req.user.id },
+      where: {
+        uuid: req.session.userId,
+      },
     });
     if (!user) {
       return res.status(404).json({ message: "User not found!" });
     }
-    req.user = user;
+    req.userId = user.id;
+    req.role = user.role;
+
     next();
   } catch (error) {
     return res
@@ -56,7 +60,7 @@ export const adminOnly = async (req, res, next) => {
 
   // validasi jika user tidak ditemukan
   if (!user) {
-    return res.status(404).json({ message: "user not found!" });
+    return res.status(404).json({ message: "User not found!" });
   }
   // validasi jika user bukan admin
   if (user.role !== "admin") {

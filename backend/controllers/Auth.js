@@ -110,13 +110,14 @@ export const forgotPassword = async (req, res) => {
 
   await user.update({ resetPasswordLink: token });
 
+  const resetPasswordUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
   const templateEmail = {
     from: "Rizki Programmer",
     to: email,
     subject: "Link Reset Password",
     html: `<p>Silahkan klik link dibawah untuk reset password anda</p> <p>${process.env.CLIENT_URL}/reset-password/${token}</p>`,
   };
-
+  console.log(`Reset URL: ${resetPasswordUrl}`); // Log URL untuk verifikasi
   console.log(templateEmail);
 
   try {

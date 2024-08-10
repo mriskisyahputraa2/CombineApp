@@ -16,6 +16,6 @@ export const KirimEmail = async (dataEmail) => {
     const info = await transporter.sendMail(dataEmail);
     console.log(`Email terkirim: ${info.messageId}`);
   } catch (err) {
-    console.log(`Terjadi Kesalahan: ${err}`);
+    console.log(`Terjadi Kesalahan: ${err.message}`);
   }
 };
