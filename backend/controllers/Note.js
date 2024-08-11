@@ -157,8 +157,8 @@ export const updateNote = async (req, res) => {
 export const updateNotePinned = async (req, res) => {
   const noteUuid = req.params.id;
   const { isPinned } = req.body;
-  const userId = req.user.id;
-
+  // const userId = req.user.id;
+  const userId = req.userId;
   try {
     const note = await Note.findOne({
       where: {
@@ -183,8 +183,6 @@ export const updateNotePinned = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-//
 
 // Function Delete Note
 export const deleteNote = async (req, res) => {
