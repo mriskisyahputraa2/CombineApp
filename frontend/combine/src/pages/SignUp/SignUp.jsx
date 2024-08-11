@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { registerUser, reset } from "../../features/authSlice";
 import { Link } from "react-router-dom";
+import Toast from "../../components/ToastMessage/Toast";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -16,21 +18,36 @@ const SignUp = () => {
     (state) => state.auth
   );
 
+  // console.log(user, isError, isSuccess, isLoading, message);
+
   const handleSignUp = (e) => {
     e.preventDefault();
+    if (password !== confPassword) {
+      return alert("Passwords do not match.");
+    }
     dispatch(registerUser({ name, email, password, confPassword }));
   };
 
   useEffect(() => {
-    if (user || isSuccess) {
-      navigate("/dashboard");
+    if (isSuccess) {
+      toast.success("Register Successfully!"); // Menampilkan toast sukses
+      // Delay 2 detik sebelum mengarahkan ke halaman login
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    } else if (isError) {
+      toast.error(message);
     }
-    dispatch(reset());
-  }, [user, isSuccess, dispatch, navigate]);
+
+    return () => {
+      dispatch(reset());
+    };
+  }, [isSuccess, isError, message, navigate, dispatch]);
 
   return (
     <>
       <section className="bg-gray-500 min-h-screen flex items-center justify-center">
+        <Toast />
         <div className="w-full max-w-md mx-auto p-4">
           <form
             onSubmit={handleSignUp}
@@ -52,6 +69,7 @@ const SignUp = () => {
                 placeholder="Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
             <div className="mb-4">
@@ -62,12 +80,13 @@ const SignUp = () => {
                 Email
               </label>
               <input
-                type="text"
+                type="email"
                 id="email"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="mb-4">
@@ -84,6 +103,7 @@ const SignUp = () => {
                 placeholder="**********"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
             <div className="mb-4">
@@ -100,6 +120,7 @@ const SignUp = () => {
                 placeholder="**********"
                 value={confPassword}
                 onChange={(e) => setConfPassword(e.target.value)}
+                required
               />
             </div>
             <div className="flex items-center justify-between">

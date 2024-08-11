@@ -19,6 +19,7 @@ import Users from "./pages/Users/Users";
 import AddUsers from "./pages/Users/AddUsers";
 import EditUser from "./pages/Users/EditUser";
 import ResetPassword from "./pages/Forgot-Reset-Pass/ResetPassword";
+import ChangePassword from "./pages/Settings/ChangePassword";
 
 function App() {
   return (
@@ -36,6 +37,11 @@ function App() {
           />
 
           <Route path="/setting-account" exact element={<Settings />} />
+          <Route
+            path="/change-password/:id"
+            exact
+            element={<ChangePassword />}
+          />
           <Route path="/users" exact element={<Users />} />
           <Route path="/users/add" exact element={<AddUsers />} />
           <Route path="/users/edit/:id" exact element={<EditUser />} />

@@ -18,15 +18,19 @@ const ProfileInfo = () => {
   useEffect(() => {
     const getUserProfile = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("access");
+        // console.log("Access Token:", token); // Cek apakah token diambil dengan benar
+        if (!token) throw new Error("Token tidak ditemukan");
+
         const response = await axios.get("http://localhost:8080/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+        // console.log("User profile:", response.data);
         setUser(response.data);
       } catch (error) {
-        console.log(error.message);
+        console.error("Gagal mengambil profil pengguna:", error.message);
       }
     };
 
@@ -40,14 +44,18 @@ const ProfileInfo = () => {
 
   // logout
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken"); // Sesuaikan kunci dengan yang digunakan saat login
     dispatch(logOut());
     dispatch(reset());
     navigate("/");
   };
 
   if (!user) {
-    return <div>Loading...</div>; // Menampilkan loading saat data belum diambil
+    return (
+      <div className="w-10 h-10 bg-gray-200 animate-pulse rounded-full">
+        Loading...
+      </div>
+    ); // Menampilkan loading saat data belum diambil
   }
 
   const profileImg = user.role === "admin" ? adminImg : userImg;

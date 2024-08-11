@@ -45,37 +45,61 @@ const Welcome = () => {
     "December",
   ];
 
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth); // Mendapatkan data user dari Redux state
 
+  // Fungsi untuk mengambil data products
   const getAllProducts = async () => {
     try {
+      const token = localStorage.getItem("access");
       const response = await axios.get(
-        "http://localhost:8080/get-all-products"
+        "http://localhost:8080/get-all-products",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      setProducts(response.data);
+      // console.log("Products:", response.data); // Tambahkan log untuk melihat data
+      setProducts(response.data); // Menyimpan data products ke state
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
+  // Fungsi untuk mengambil data books
   const getAllBooks = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/get-all-books");
-      setBooks(response.data);
+      const token = localStorage.getItem("access");
+      const response = await axios.get("http://localhost:8080/get-all-books", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log("Books:", response.data); // Tambahkan log untuk melihat data
+      setBooks(response.data); // Menyimpan data books ke state
     } catch (error) {
       console.error("Error fetching books:", error);
     }
   };
 
+  // Fungsi untuk mengambil data notes
   const getAllNotes = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/get-all-notes");
-      setNotes(response.data);
+      const token = localStorage.getItem("access");
+      if (!token) throw new Error("Token tidak ditemukan");
+      const response = await axios.get("http://localhost:8080/get-all-notes", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // console.log("Notes:", response.data); // Tambahkan log untuk melihat data
+      setNotes(response.data); // Menyimpan data notes ke state
     } catch (error) {
       console.error("Error fetching notes:", error);
     }
   };
 
+  // Mengambil data pada saat komponen pertama kali di-render
   useEffect(() => {
     getAllProducts();
     getAllBooks();

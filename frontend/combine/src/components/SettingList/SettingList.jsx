@@ -14,7 +14,13 @@ const SettingList = () => {
 
   const getUserProfile = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/me");
+      const token = localStorage.getItem("access");
+      // console.log("token gue:", token);
+      const response = await axios.get("http://localhost:8080/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -55,7 +61,7 @@ const SettingList = () => {
         </div>
         <div className="flex flex-col space-y-4 w-full">
           <Link
-            to={"/change-password"}
+            to={`/change-password/${user.uuid}`}
             className="bg-blue-500 text-center text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
           >
             Change Password

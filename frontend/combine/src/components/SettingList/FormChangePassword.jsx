@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom"; // Import useParams
+import React, { useEffect, useState } from "react";
+import Toast from "../ToastMessage/Toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Toast from "../../components/ToastMessage/Toast";
 import axios from "axios";
 
-const ResetPassword = () => {
-  const { token } = useParams(); // Gunakan useParams untuk mendapatkan token
+const FormChangePassword = () => {
+  const { id } = useParams(); // Dapatkan token dari URL
   const navigate = useNavigate("");
   const [formData, setFormData] = useState({
     password: "",
@@ -45,19 +45,26 @@ const ResetPassword = () => {
     return isValid;
   };
 
-  const resetPassword = async (e) => {
+  const changePassword = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const data = {
-          token: token, // Gunakan token dari useParams
-          password: formData.password,
-        };
+        const token = localStorage.getItem("access");
+        console.log("Token:", token);
 
         const res = await axios.put(
-          "http://localhost:8080/reset-password",
-          data
+          `http://localhost:8080/change-password/${id}`,
+          {
+            password: formData.password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
+
+        console.log(res);
 
         if (res.data.status) {
           toast.success(res.data.message);
@@ -66,12 +73,13 @@ const ResetPassword = () => {
             confirmPassword: "",
           });
           setTimeout(() => {
-            navigate("/");
-          }, 1000); // Jeda 3 detik sebelum mengarahkan pengguna ke halaman login
+            navigate("/setting-account");
+          }, 1000); // Jeda 1 detik sebelum mengarahkan pengguna ke halaman setting account
         } else {
           toast.error(res.data.message);
         }
       } catch (error) {
+        console.log(error.message);
         toast.error("Something went wrong. Please try again.");
       }
     }
@@ -79,14 +87,14 @@ const ResetPassword = () => {
 
   return (
     <>
-      <section className="bg-gray-500 min-h-screen flex items-center justify-center">
+      <div className="p-6 flex items-center justify-center min-h-screen">
         <Toast />
-        <div className="w-full max-w-md mx-auto p-4">
-          <form
-            onSubmit={resetPassword}
-            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-          >
-            <div className="mb-4">
+        <div className="bg-white shadow-lg rounded-lg w-full max-w-lg p-8 md:p-12 mx-auto">
+          <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+            Change Password
+          </h1>
+          <form className="space-y-6" onSubmit={changePassword}>
+            <div>
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="password"
@@ -96,7 +104,7 @@ const ResetPassword = () => {
               <input
                 type="password"
                 id="password"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Enter New Password"
                 value={formData.password}
                 onChange={handleChange}
@@ -105,7 +113,7 @@ const ResetPassword = () => {
                 <p className="text-red-500">{errors.password}</p>
               )}
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="confirmPassword"
@@ -115,7 +123,7 @@ const ResetPassword = () => {
               <input
                 type="password"
                 id="confirmPassword"
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Repeat Password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
@@ -124,25 +132,25 @@ const ResetPassword = () => {
                 <p className="text-red-500">{errors.confirmPassword}</p>
               )}
             </div>
-            <div className="flex flex-col justify-between">
+            <div className="flex flex-col items-center justify-center space-y-4">
               <button
                 type="submit"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline"
               >
                 Simpan
               </button>
-              <p className="text-sm text-center mt-4">
-                Do you have an account?{" "}
-                <Link to="/" className="text-blue-500 hover:underline">
-                  Login
-                </Link>
-              </p>
+              <Link
+                to="/setting-account"
+                className="w-full text-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                Cancel
+              </Link>
             </div>
           </form>
         </div>
-      </section>
+      </div>
     </>
   );
 };
 
-export default ResetPassword;
+export default FormChangePassword;
