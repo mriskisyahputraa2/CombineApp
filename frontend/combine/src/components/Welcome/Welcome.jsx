@@ -50,14 +50,8 @@ const Welcome = () => {
   // Fungsi untuk mengambil data products
   const getAllProducts = async () => {
     try {
-      const token = localStorage.getItem("access");
       const response = await axios.get(
-        "http://localhost:8080/get-all-products",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        "http://localhost:8080/get-all-products"
       );
       // console.log("Products:", response.data); // Tambahkan log untuk melihat data
       setProducts(response.data); // Menyimpan data products ke state
@@ -69,12 +63,7 @@ const Welcome = () => {
   // Fungsi untuk mengambil data books
   const getAllBooks = async () => {
     try {
-      const token = localStorage.getItem("access");
-      const response = await axios.get("http://localhost:8080/get-all-books", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get("http://localhost:8080/get-all-books");
       // console.log("Books:", response.data); // Tambahkan log untuk melihat data
       setBooks(response.data); // Menyimpan data books ke state
     } catch (error) {
@@ -85,13 +74,7 @@ const Welcome = () => {
   // Fungsi untuk mengambil data notes
   const getAllNotes = async () => {
     try {
-      const token = localStorage.getItem("access");
-      if (!token) throw new Error("Token tidak ditemukan");
-      const response = await axios.get("http://localhost:8080/get-all-notes", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get("http://localhost:8080/get-all-notes");
       // console.log("Notes:", response.data); // Tambahkan log untuk melihat data
       setNotes(response.data); // Menyimpan data notes ke state
     } catch (error) {

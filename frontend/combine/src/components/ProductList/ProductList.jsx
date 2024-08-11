@@ -29,7 +29,7 @@ const ProductList = () => {
   };
 
   const onSearchProduct = async ({ query }) => {
-    // jika pengguna menghapus text di pencarian, tampilkan lagi semua data product
+    // jika pengguna menghapus text di pencarian, tampilkan lagi semua data produk
     if (query === "") {
       getAllProduct();
     } else {
