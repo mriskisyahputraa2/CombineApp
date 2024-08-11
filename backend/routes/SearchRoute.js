@@ -4,6 +4,6 @@ import { searchItems } from "../controllers/Search.js";
 
 const router = express.Router();
 
-router.get("/search", verifyUser, searchItems);
+router.get("/search", searchItems);
 
 export default router;

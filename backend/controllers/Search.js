@@ -5,12 +5,6 @@ import { Op } from "sequelize";
 import User from "../models/UserModel.js";
 
 export const searchItems = async (req, res) => {
-  if (!req.user || !req.user.uuid) {
-    return res.status(401).json({
-      message: "Unauthorized: User information not available",
-    });
-  }
-
   const { query, type } = req.query;
 
   if (!query || !type) {
@@ -20,8 +14,6 @@ export const searchItems = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ where: { id: req.user.id } });
-
     let searchCriteria;
     let matchingItems;
 
@@ -34,12 +26,9 @@ export const searchItems = async (req, res) => {
             { "$user.name$": { [Op.like]: `%${query}%` } },
           ],
         };
-        if (user.role !== "admin") {
-          searchCriteria.userId = req.user.id;
-        }
         matchingItems = await Note.findAll({
           where: searchCriteria,
-          include: [{ model: User, attribute: ["name"] }],
+          include: [{ model: User, attributes: ["name"] }],
         });
         break;
       case "product":
@@ -52,7 +41,7 @@ export const searchItems = async (req, res) => {
         };
         matchingItems = await Product.findAll({
           where: searchCriteria,
-          include: [{ model: User, attribute: ["name"] }],
+          include: [{ model: User, attributes: ["name"] }],
         });
         break;
       case "book":
@@ -65,7 +54,7 @@ export const searchItems = async (req, res) => {
         };
         matchingItems = await Book.findAll({
           where: searchCriteria,
-          include: [{ model: User, attribute: ["name"] }],
+          include: [{ model: User, attributes: ["name"] }],
         });
         break;
       default:
