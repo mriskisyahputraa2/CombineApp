@@ -20,7 +20,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
+// welcome
 const Welcome = () => {
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
