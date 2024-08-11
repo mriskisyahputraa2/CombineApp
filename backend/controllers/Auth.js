@@ -31,7 +31,7 @@ export const Login = async (req, res) => {
 
     // validasi jika password tidak cocok
     if (!match) {
-      return res.status(400).json({ message: "Incorrect password!" });
+      return res.status(400).json({ message: "Wrong password!" });
     }
 
     // membuat token jwt payload berisi userId dan role pengguna
@@ -161,6 +161,38 @@ export const resetPassword = async (req, res) => {
     });
   } catch (error) {
     console.error("Error resetting password:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error.",
+    });
+  }
+};
+
+// function change password
+export const changePassword = async (req, res) => {
+  const { password } = req.body;
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findOne({ where: { uuid: userId } });
+
+    if (!user) {
+      return res.status(404).json({
+        status: false,
+        message: "User not found.",
+      });
+    }
+
+    const hashPassword = await argon2.hash(password, 12);
+    user.password = hashPassword;
+    await user.save();
+
+    return res.status(200).json({
+      status: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    console.error("Error changing password:", error);
     return res.status(500).json({
       status: false,
       message: "Internal server error.",
