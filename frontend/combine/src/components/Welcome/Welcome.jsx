@@ -22,6 +22,7 @@ ChartJS.register(
 );
 
 const Welcome = () => {
+  const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const [books, setBooks] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -46,6 +47,18 @@ const Welcome = () => {
   ];
 
   const { user } = useSelector((state) => state.auth); // Mendapatkan data user dari Redux state
+
+  // Fungsi untuk mengambil data products
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users");
+      // console.log("Products:", response.data); // Tambahkan log untuk melihat data
+      setUsers(response.data); // Menyimpan data products ke state
+      // console.log("response", response.data); //
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   // Fungsi untuk mengambil data products
   const getAllProducts = async () => {
@@ -84,6 +97,7 @@ const Welcome = () => {
 
   // Mengambil data pada saat komponen pertama kali di-render
   useEffect(() => {
+    getAllUsers();
     getAllProducts();
     getAllBooks();
     getAllNotes();
@@ -170,22 +184,47 @@ const Welcome = () => {
       <h2 className="text-xl text-gray-700">
         Welcome <strong className="text-gray-900">{user && user.name}</strong>
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-        <div className="p-4 bg-white shadow rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Total Products
-          </h3>
-          <p className="text-2xl text-gray-700">{products.length}</p>
+      {/* Conditional Grid Layout based on Role */}
+      {user && user.role === "admin" ? (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Total Users</h3>
+            <p className="text-2xl text-gray-700">{users.length}</p>
+          </div>
+          {/* Additional Columns for Admin */}
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Total Products
+            </h3>
+            <p className="text-2xl text-gray-700">{products.length}</p>
+          </div>
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Total Books</h3>
+            <p className="text-2xl text-gray-700">{books.length}</p>
+          </div>
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Total Notes</h3>
+            <p className="text-2xl text-gray-700">{notes.length}</p>
+          </div>
         </div>
-        <div className="p-4 bg-white shadow rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900">Total Books</h3>
-          <p className="text-2xl text-gray-700">{books.length}</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Total Products
+            </h3>
+            <p className="text-2xl text-gray-700">{products.length}</p>
+          </div>
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Total Books</h3>
+            <p className="text-2xl text-gray-700">{books.length}</p>
+          </div>
+          <div className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-lg font-semibold text-gray-900">Total Notes</h3>
+            <p className="text-2xl text-gray-700">{notes.length}</p>
+          </div>
         </div>
-        <div className="p-4 bg-white shadow rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900">Total Notes</h3>
-          <p className="text-2xl text-gray-700">{notes.length}</p>
-        </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* Kalender */}
